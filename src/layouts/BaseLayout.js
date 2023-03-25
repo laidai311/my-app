@@ -45,6 +45,8 @@ const BaseLayout = ({ children }) => {
         return () => {
             if (!user) {
                 unsubscribe();
+            } else {
+                setIsReady(true);
             }
         };
     }, [user]);
