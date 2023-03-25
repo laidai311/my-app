@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: "GoogleSansDisplay";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/fonts/GoogleSansDisplay-Regular.woff2") format("woff2"),
+        url("/fonts/GoogleSansDisplay-Regular.woff") format("woff"),
+        url("/fonts/GoogleSansDisplay-Regular.ttf") format("ttf");
+}
+@font-face {
+    font-family: "GoogleSansText";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/fonts/GoogleSansText-Regular.woff2") format("woff2"),
+        url("/fonts/GoogleSansText-Regular.woff") format("woff"),
+        url("/fonts/GoogleSansText-Regular.ttf") format("ttf");
+}
+
+@layer base {
+    html {
+        font-family: GoogleSansText, system-ui, sans-serif;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: GoogleSansDisplay, system-ui, sans-serif;
+    }
+}
