@@ -1,10 +1,10 @@
 import { routes } from "@/configs/routes";
-import { SpinnerWhiteIcon } from "@/components/ProviderIcon";
 import { useEffect, useState } from "react";
 import { useResizeWindow } from "@/libs/hooks";
 import { useRouter } from "next/router";
 import { useUserStore } from "@/libs/store";
 import auth from "@/libs/auth";
+import FullPageLoader from "@/components/FullPageLoader";
 import Head from "next/head";
 
 const BaseLayout = ({ children }) => {
@@ -30,11 +30,10 @@ const BaseLayout = ({ children }) => {
 
                 const res = await auth.onChanged();
                 const user = await auth.formatUser(res);
-                console.log(user);
+
                 setUser(user);
                 setIsReady(true);
             } catch (_error) {
-                console.log(_error);
                 if (isPublic) {
                     setIsReady(true);
                 } else {
@@ -46,8 +45,6 @@ const BaseLayout = ({ children }) => {
         return () => {
             if (!user) {
                 unsubscribe();
-            } else {
-                setIsReady(true);
             }
         };
     }, [user]);
@@ -55,7 +52,7 @@ const BaseLayout = ({ children }) => {
     return (
         <>
             <Head>
-                <title>Dai Lai 99 66</title>
+                <title>DaiLai 9966</title>
                 <meta name="description" content="Dailai9966" />
                 <meta
                     name="viewport"
@@ -63,15 +60,7 @@ const BaseLayout = ({ children }) => {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main>
-                {true || isReady ? (
-                    children
-                ) : (
-                    <div className="flex justify-center items-center min-h-[var(--window-inner-height)] bg-primary-focus">
-                        <SpinnerWhiteIcon className="animate-spin-steps-12 w-10 h-10" />
-                    </div>
-                )}
-            </main>
+            <main>{isReady ? children : <FullPageLoader />}</main>
         </>
     );
 };

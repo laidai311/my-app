@@ -1,7 +1,6 @@
 import { emailValidator } from "./EmailField";
 import { motion, AnimatePresence } from "framer-motion";
 import { passwordValidator } from "./PasswordField";
-import { SpinnerWhiteIcon } from "@/components/ProviderIcon";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/libs/store";
@@ -9,6 +8,7 @@ import auth from "@/libs/auth";
 import Cookies from "js-cookie";
 import PreviewAccounts from "./PreviewAccounts";
 import SignInForm from "./SignInForm";
+import FullPageLoader from "@/components/FullPageLoader";
 
 const SignInApp = (props) => {
     const [data, setData] = useState();
@@ -91,13 +91,13 @@ const SignInApp = (props) => {
     };
 
     return (
-        <div className="bg-primary-focus">
-            <div className="container mx-auto">
-                <div className="flex justify-center items-center min-h-[var(--window-inner-height)]">
-                    <AnimatePresence>
-                        {!isReady || isSubmitting ? (
-                            <SpinnerWhiteIcon className="animate-spin-steps-12 w-10 h-10" />
-                        ) : (
+        <AnimatePresence>
+            {!isReady || isSubmitting ? (
+                <FullPageLoader />
+            ) : (
+                <div className="bg-primary-focus">
+                    <div className="container mx-auto">
+                        <div className="flex justify-center items-center min-h-[var(--window-inner-height)]">
                             <motion.div
                                 initial={{
                                     opacity: 0,
@@ -155,11 +155,11 @@ const SignInApp = (props) => {
                                     />
                                 </div>
                             </motion.div>
-                        )}
-                    </AnimatePresence>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            )}
+        </AnimatePresence>
     );
 };
 

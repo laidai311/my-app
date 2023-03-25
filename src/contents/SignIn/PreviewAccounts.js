@@ -36,7 +36,7 @@ const PreviewAccounts = ({ onClick }) => {
     }
 
     return (
-        <div className="flex justify-center space-x-2">
+        <div className="flex justify-center space-x-2 w-full overflow-x-auto">
             {emails.map((item, index) => (
                 <div
                     key={index}
