@@ -30,10 +30,11 @@ const BaseLayout = ({ children }) => {
 
                 const res = await auth.onChanged();
                 const user = await auth.formatUser(res);
-
+                console.log(user);
                 setUser(user);
                 setIsReady(true);
             } catch (_error) {
+                console.log(_error);
                 if (isPublic) {
                     setIsReady(true);
                 } else {
@@ -63,7 +64,7 @@ const BaseLayout = ({ children }) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main>
-                {isReady ? (
+                {true || isReady ? (
                     children
                 ) : (
                     <div className="flex justify-center items-center min-h-[var(--window-inner-height)] bg-primary-focus">
