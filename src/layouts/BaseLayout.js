@@ -5,29 +5,43 @@ import { useResizeWindow } from "@/libs/hooks";
 import { useRouter } from "next/router";
 import FullPageLoader from "@/components/FullPageLoader";
 import Head from "next/head";
+import Cookies from "js-cookie";
+import { useUserStore } from "@/libs/store";
 
 const BaseLayout = ({ children }) => {
-    const { user, isLoading } = useAuth();
+    // const { user, isLoading } = useAuth();
     const router = useRouter();
     useResizeWindow();
+    const { setUser } = useUserStore();
+
+    // useEffect(() => {
+    //     router.prefetch("/sign-in");
+    // }, [router]);
+
+    // useEffect(() => {
+    //     if (!isLoading) {
+    //         const isPublic = routes.public.some((route) => {
+    //             if (router.asPath.split("?")[0].search(route) >= 0) {
+    //                 return true;
+    //             }
+    //         });
+
+    //         if (!isPublic && !user) {
+    //             router.push("/sign-in");
+    //         }
+    //     }
+    // }, [user, isLoading]);
 
     useEffect(() => {
-        router.prefetch("/sign-in");
-    }, [router]);
-
-    useEffect(() => {
-        if (!isLoading) {
-            const isPublic = routes.public.some((route) => {
-                if (router.asPath.split("?")[0].search(route) >= 0) {
-                    return true;
-                }
-            });
-
-            if (!isPublic && !user) {
-                router.push("/sign-in");
+        const unsubscribe = () => {
+            const local = Cookies.get("user");
+            if (local) {
+                const userLocal = JSON.parse(local);
+                setUser(userLocal);
             }
-        }
-    }, [user, isLoading]);
+        };
+        return () => unsubscribe();
+    }, []);
 
     return (
         <>
@@ -40,7 +54,8 @@ const BaseLayout = ({ children }) => {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main>{isLoading ? <FullPageLoader /> : children}</main>
+            {/* <main>{isLoading ? <FullPageLoader /> : children}</main> */}
+            <main>{children}</main>
         </>
     );
 };

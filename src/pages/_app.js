@@ -23,11 +23,7 @@ export default function App({ Component, pageProps }) {
                 }
             }}
         >
-            <AuthUserProvider>
-                <BaseLayout>
-                    {getLayout(<Component {...pageProps} />)}
-                </BaseLayout>
-            </AuthUserProvider>
+            <BaseLayout>{getLayout(<Component {...pageProps} />)}</BaseLayout>
         </AnimatePresence>
     );
 }

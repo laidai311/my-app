@@ -1,9 +1,11 @@
 import { emailValidator } from "./EmailField";
 import { motion, AnimatePresence } from "framer-motion";
 import { passwordValidator } from "./PasswordField";
-import { useAuth } from "@/contexts/AuthUserContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/libs/store";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/configs/firebase";
 import FullPageLoader from "@/components/FullPageLoader";
 import PreviewAccounts from "./PreviewAccounts";
 import SignInForm from "./SignInForm";
@@ -14,7 +16,7 @@ const SignInApp = (props) => {
     const [errors, setErrors] = useState();
     const [isReady, setIsReady] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState();
-    const { authUser, signInApp } = useAuth();
+    const { user, setUser } = useUserStore();
     const router = useRouter();
 
     useEffect(() => {
@@ -22,15 +24,15 @@ const SignInApp = (props) => {
     }, [router]);
 
     useEffect(() => {
-        if (authUser) {
+        if (user) {
             router.push("/");
         } else {
             setIsReady(true);
         }
-    }, [authUser]);
+    }, [user]);
 
     const handleSignIn = async (_, value) => {
-        const { email, password } = value;
+        const { email, password, isRemember } = value;
         const emailMsg = emailValidator(email);
         const passwordMsg = passwordValidator(password);
 
@@ -44,8 +46,31 @@ const SignInApp = (props) => {
 
         try {
             setIsSubmitting(true);
-            await signInApp(value);
-            router.push("/");
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            const formatUser = {
+                uid: userCredential.user.uid,
+                email: userCredential.user.email,
+                name: userCredential.user.displayName,
+                photoURL: userCredential.user.photoURL,
+                token: userCredential.user.accessToken,
+                refreshToken: userCredential.user.refreshToken,
+            };
+            const account = {
+                password: !!isRemember ? password : "",
+                email: userCredential.user.email,
+                name: userCredential.user.displayName,
+                photoURL: userCredential.user.photoURL,
+            };
+
+            Cookies.set(`user`, JSON.stringify(formatUser));
+            Cookies.set(`account-${email}`, JSON.stringify(account), {
+                expires: 7,
+            });
+            setUser(formatUser);
         } catch (error) {
             switch (error?.code) {
                 case "auth/wrong-password":

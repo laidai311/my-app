@@ -1,11 +1,16 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthUserContext";
-import { useAuthStore } from "@/libs/store";
+import { useUserStore } from "@/libs/store";
+import useFirebaseAuth from "@/libs/useFirebaseAuth";
+import { signOut } from "firebase/auth";
+import { auth } from "@/configs/firebase";
+import Cookies from "js-cookie";
 
 export default function HomePage() {
-    const { authUser, signOutApp } = useAuth();
-    const { user } = useAuthStore();
+    // const { authUser, signOutApp } = useAuth();
+    const { signOutApp } = useFirebaseAuth();
+    const { user, setUser } = useUserStore();
 
     return (
         <>
@@ -15,8 +20,16 @@ export default function HomePage() {
             <main>
                 <button className="btn btn-primary">Button</button>
                 <div className="">
-                    {authUser ? (
-                        <button className="btn btn-accent" onClick={signOutApp}>
+                    {user ? (
+                        <button
+                            className="btn btn-accent"
+                            onClick={() => {
+                                signOut(auth).then(() => {
+                                    setUser(null);
+                                    Cookies.remove("user");
+                                });
+                            }}
+                        >
                             Sign out
                         </button>
                     ) : (
@@ -25,7 +38,8 @@ export default function HomePage() {
                         </Link>
                     )}
                 </div>
-                email: {authUser?.email}
+                {/* email: {authUser?.email} */}
+                <div className="">email auth: {auth?.currentUser?.email}</div>
                 <div className="">email2: {user?.email}</div>
                 <div className="">
                     <Link href="/admin" className="btn">

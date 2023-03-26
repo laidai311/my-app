@@ -9,7 +9,7 @@ import {
     signOut,
 } from "firebase/auth";
 import Cookies from "js-cookie";
-import { useAuthStore } from "./store";
+import { useUserStore } from "./store";
 import { useRouter } from "next/navigation";
 
 const reducer = (state, action) => {
@@ -64,61 +64,64 @@ const useFirebaseAuth = () => {
     });
     const router = useRouter();
 
-    const authStateChanged = async (rawUser) => {
-        dispatch({ type: "FETCH_AUTH_USER_INIT" });
+    // const authStateChanged = async (rawUser) => {
+    //     dispatch({ type: "FETCH_AUTH_USER_INIT" });
 
-        if (rawUser) {
-            const user = await formatAuthUser(rawUser);
-            // const { token, ...userWithoutToken } = user;
+    //     if (rawUser) {
+    //         const user = await formatAuthUser(rawUser);
+    //         // const { token, ...userWithoutToken } = user;
 
-            // createUser(user.uid, userWithoutToken);
-            // setAccessToken(user.token);
-            Cookies.set(`auth`, JSON.stringify(user));
-            dispatch({ type: "FETCH_AUTH_USER_SUCCESS", payload: user });
-            return user;
-        } else {
-            dispatch({ type: "FETCH_AUTH_USER_FAILURE" });
-            return null;
-        }
-    };
+    //         // createUser(user.uid, userWithoutToken);
+    //         // setAccessToken(user.token);
+    //         Cookies.set(`auth`, JSON.stringify(user));
+    //         dispatch({ type: "FETCH_AUTH_USER_SUCCESS", payload: user });
+    //         return user;
+    //     } else {
+    //         dispatch({ type: "FETCH_AUTH_USER_FAILURE" });
+    //         return null;
+    //     }
+    // };
 
-    useEffect(() => {
-        const unsubscribe = () => {
-            const local = Cookies.get("auth");
-            if (local) {
-                const auth = JSON.parse(local);
-                dispatch({ type: "FETCH_AUTH_USER_SUCCESS", payload: auth });
-            } else {
-                dispatch({ type: "FETCH_AUTH_USER_FAILURE" });
-            }
-        };
-        return () => unsubscribe();
-    }, [router]);
+    // useEffect(() => {
+    //     const unsubscribe = () => {
+    //         const local = Cookies.get("auth");
+    //         if (local) {
+    //             const auth = JSON.parse(local);
+    //             dispatch({ type: "FETCH_AUTH_USER_SUCCESS", payload: auth });
+    //         } else {
+    //             dispatch({ type: "FETCH_AUTH_USER_FAILURE" });
+    //         }
+    //     };
+    //     return () => unsubscribe();
+    // }, [router]);
 
-    const signInApp = async ({ email, password, isRemember }) => {
-        await setPersistence(
+    // .then(
+    //     (userCredential) => {
+    //         authStateChanged(userCredential.user);
+    //         Cookies.set(
+    //             `account-${email}`,
+    //             JSON.stringify({
+    //                 email,
+    //                 password: !!isRemember ? password : "",
+    //                 name: res?.user.name,
+    //                 photoURL: res?.user.photoURL,
+    //             }),
+    //             { expires: 7 }
+    //         );
+    //     }
+    // );
+
+    const handlePersistence = (isRemember) =>
+        setPersistence(
             auth,
             isRemember ? browserLocalPersistence : browserSessionPersistence
         );
-        return signInWithEmailAndPassword(auth, email, password).then(
-            (userCredential) => {
-                authStateChanged(userCredential.user);
-                Cookies.set(
-                    `account-${email}`,
-                    JSON.stringify({
-                        email,
-                        password: !!isRemember ? password : "",
-                        name: res?.user.name,
-                        photoURL: res?.user.photoURL,
-                    }),
-                    { expires: 7 }
-                );
-            }
-        );
-    };
+
+    const signInApp = async (email, password) =>
+        signInWithEmailAndPassword(auth, email, password);
 
     const clearUser = () => {
-        dispatch({ type: "CLEAR_AUTH_USER" });
+        // dispatch({ type: "CLEAR_AUTH_USER" });
         Cookies.remove("auth");
     };
 
@@ -127,7 +130,7 @@ const useFirebaseAuth = () => {
     return {
         authUser,
         isLoading,
-        authStateChanged,
+        handlePersistence,
         signInApp,
         signOutApp,
     };
