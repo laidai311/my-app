@@ -8,6 +8,7 @@ import { auth } from "@/configs/firebase";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
+import CustomEditor from "@/components/tinymce/CustomEditor";
 
 export default function HomePage() {
     // const { authUser, signOutApp } = useAuth();
@@ -17,7 +18,9 @@ export default function HomePage() {
 
     useEffect(() => {
         const handleUser = (user) => {
-            setEmail(user.email);
+            if (user) {
+                setEmail(user?.email);
+            }
         };
         const unsubscribe = () => onAuthStateChanged(auth, handleUser);
         return () => unsubscribe();
@@ -58,6 +61,7 @@ export default function HomePage() {
                         Admin
                     </Link>
                 </div>
+                <CustomEditor />
                 <div className="form-control w-full max-w-xs">
                     <label className="label">
                         <span className="label-text">What is your name?</span>
