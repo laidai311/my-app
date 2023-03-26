@@ -1,21 +1,19 @@
 import { emailValidator } from "./EmailField";
 import { motion, AnimatePresence } from "framer-motion";
 import { passwordValidator } from "./PasswordField";
+import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/libs/store";
-import auth from "@/libs/auth";
-import Cookies from "js-cookie";
+import FullPageLoader from "@/components/FullPageLoader";
 import PreviewAccounts from "./PreviewAccounts";
 import SignInForm from "./SignInForm";
-import FullPageLoader from "@/components/FullPageLoader";
 
 const SignInApp = (props) => {
     const [data, setData] = useState();
     const [errors, setErrors] = useState();
     const [isReady, setIsReady] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState();
-    const { user, setUser } = useUserStore();
+    const { user, signIn } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
@@ -26,12 +24,12 @@ const SignInApp = (props) => {
         if (user) {
             router.push("/");
         } else {
+            setIsReady(true);
         }
-        setIsReady(true);
     }, [user]);
 
     const handleSignIn = async (_, value) => {
-        const { email, password, isRemember } = value;
+        const { email, password } = value;
         const emailMsg = emailValidator(email);
         const passwordMsg = passwordValidator(password);
 
@@ -46,22 +44,7 @@ const SignInApp = (props) => {
         try {
             setIsSubmitting(true);
 
-            await auth.setPersistence(!!isRemember);
-            const res = await auth.signIn(email, password);
-            const user = await auth.formatUser(res);
-
-            setUser(user);
-
-            Cookies.set(
-                `account-${email}`,
-                JSON.stringify({
-                    email,
-                    password: !!isRemember ? password : "",
-                    name: user.name,
-                    photoUrl: user.photoUrl,
-                }),
-                { expires: 7 }
-            );
+            await signIn(value);
         } catch (error) {
             switch (error?.code) {
                 case "auth/wrong-password":

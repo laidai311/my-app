@@ -1,20 +1,9 @@
-import { useUserStore } from "@/libs/store";
-import auth from "@/libs/auth";
 import Head from "next/head";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function HomePage() {
-    const { user, setUser } = useUserStore();
-
-    const handleLogout = () => {
-        auth.signOut()
-            .then(() => {
-                setUser(null);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
+    const { user, signOutApp } = useAuth();
 
     return (
         <>
@@ -25,10 +14,7 @@ export default function HomePage() {
                 <button className="btn btn-primary">Button</button>
                 <div className="">
                     {user ? (
-                        <button
-                            className="btn btn-accent"
-                            onClick={handleLogout}
-                        >
+                        <button className="btn btn-accent" onClick={signOutApp}>
                             Sign out
                         </button>
                     ) : (

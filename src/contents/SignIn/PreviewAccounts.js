@@ -51,7 +51,7 @@ const PreviewAccounts = ({ onClick, disabled }) => {
                     {item.photoUrl ? (
                         <div className="avatar">
                             <div className="w-12 h-12 rounded-full mx-auto">
-                                <img src={item.photoUrl} />
+                                <img src={item?.photoURL || item?.photoUrl} />
                             </div>
                         </div>
                     ) : (

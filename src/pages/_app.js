@@ -1,9 +1,10 @@
-import "nprogress/nprogress.css";
 import "@/styles/globals.css";
+import "nprogress/nprogress.css";
+import { AnimatePresence } from "framer-motion";
+import { AuthProvider } from "@/contexts/AuthContext";
+import BaseLayout from "@/layouts/BaseLayout";
 import nProgress from "nprogress";
 import Router from "next/router";
-import { AnimatePresence } from "framer-motion";
-import BaseLayout from "@/layouts/BaseLayout";
 
 export default function App({ Component, pageProps }) {
     const getLayout = Component.getLayout || ((page) => page);
@@ -22,7 +23,11 @@ export default function App({ Component, pageProps }) {
                 }
             }}
         >
-            <BaseLayout>{getLayout(<Component {...pageProps} />)}</BaseLayout>
+            <AuthProvider>
+                <BaseLayout>
+                    {getLayout(<Component {...pageProps} />)}
+                </BaseLayout>
+            </AuthProvider>
         </AnimatePresence>
     );
 }
