@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
-const PreviewAccounts = ({ onClick }) => {
+const PreviewAccounts = ({ onClick, disabled }) => {
     const [emails, setEmails] = useState([]);
 
     useEffect(() => {
@@ -36,9 +36,9 @@ const PreviewAccounts = ({ onClick }) => {
     }
 
     return (
-        <div className="flex justify-center space-x-2 w-full overflow-x-auto">
+        <div className="flex justify-center space-x-2 w-full overflow-x-auto overflow-y-hidden">
             {emails.map((item, index) => (
-                <div
+                <button
                     key={index}
                     className={`flex flex-col justify-center space-y-1 btn btn-ghost flex-nowrap h-fit py-2 px-1 border ${
                         item?.isActive
@@ -46,6 +46,7 @@ const PreviewAccounts = ({ onClick }) => {
                             : "hover:bg-transparent hover:border-gray-300"
                     }`}
                     onClick={() => handleClick(item)}
+                    disabled={!!disabled}
                 >
                     {item.photoUrl ? (
                         <div className="avatar">
@@ -65,7 +66,7 @@ const PreviewAccounts = ({ onClick }) => {
                     <div className="text-xs text-center">
                         {item?.email?.split("@")[0]}
                     </div>
-                </div>
+                </button>
             ))}
         </div>
     );

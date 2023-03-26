@@ -19,7 +19,7 @@ export default function HomePage() {
     return (
         <>
             <Head>
-                <title>Dai Lai 99 66</title>
+                <title>DaiLai 9966</title>
             </Head>
             <main>
                 <button className="btn btn-primary">Button</button>

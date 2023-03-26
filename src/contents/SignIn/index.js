@@ -23,15 +23,11 @@ const SignInApp = (props) => {
     }, [router]);
 
     useEffect(() => {
-        const unsubscribe = () => {
-            if (user) {
-                router.push("/");
-            } else {
-                setIsReady(true);
-            }
-        };
-
-        return () => unsubscribe();
+        if (user) {
+            router.push("/");
+        } else {
+            setIsReady(true);
+        }
     }, [user]);
 
     const handleSignIn = async (_, value) => {
@@ -92,9 +88,7 @@ const SignInApp = (props) => {
 
     return (
         <AnimatePresence>
-            {!isReady || isSubmitting ? (
-                <FullPageLoader />
-            ) : (
+            {isReady ? (
                 <div className="bg-primary-focus">
                     <div className="container mx-auto">
                         <div className="flex justify-center items-center min-h-[var(--window-inner-height)]">
@@ -132,6 +126,7 @@ const SignInApp = (props) => {
                                         />{" "}
                                     </h1>
                                     <PreviewAccounts
+                                        disabled={isSubmitting}
                                         onClick={(value) => {
                                             if (value?.isActive) {
                                                 setData({
@@ -158,6 +153,8 @@ const SignInApp = (props) => {
                         </div>
                     </div>
                 </div>
+            ) : (
+                <FullPageLoader />
             )}
         </AnimatePresence>
     );

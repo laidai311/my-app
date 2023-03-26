@@ -47,7 +47,7 @@ const BaseLayout = ({ children }) => {
                 unsubscribe();
             }
         };
-    }, [user]);
+    }, []);
 
     return (
         <>
