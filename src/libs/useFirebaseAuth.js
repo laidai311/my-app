@@ -9,6 +9,7 @@ import {
     signOut,
 } from "firebase/auth";
 import Cookies from "js-cookie";
+import { useAuthStore } from "./store";
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -60,6 +61,7 @@ const useFirebaseAuth = () => {
         authUser: null,
         isLoading: false,
     });
+    const { setUser } = useAuthStore();
 
     const authStateChanged = async (rawUser) => {
         dispatch({ type: "FETCH_AUTH_USER_INIT" });
@@ -89,6 +91,9 @@ const useFirebaseAuth = () => {
             isRemember ? browserLocalPersistence : browserSessionPersistence
         );
         return signInWithEmailAndPassword(auth, email, password).then((res) => {
+            formatAuthUser(res.user).then((res) => {
+                setUser(res);
+            });
             Cookies.set(
                 `account-${email}`,
                 JSON.stringify({

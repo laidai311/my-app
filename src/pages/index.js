@@ -1,9 +1,11 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthUserContext";
+import { useAuthStore } from "@/libs/store";
 
 export default function HomePage() {
     const { authUser, signOutApp } = useAuth();
+    const { user } = useAuthStore();
 
     return (
         <>
@@ -24,8 +26,11 @@ export default function HomePage() {
                     )}
                 </div>
                 email: {authUser?.email}
-                <div className=''>
-                    <Link href='/admin' className="btn">Admin</Link>
+                <div className="">email2: {user?.email}</div>
+                <div className="">
+                    <Link href="/admin" className="btn">
+                        Admin
+                    </Link>
                 </div>
                 <div className="form-control w-full max-w-xs">
                     <label className="label">

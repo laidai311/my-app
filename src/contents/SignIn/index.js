@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import FullPageLoader from "@/components/FullPageLoader";
 import PreviewAccounts from "./PreviewAccounts";
 import SignInForm from "./SignInForm";
+import Cookies from "js-cookie";
 
 const SignInApp = (props) => {
     const [data, setData] = useState();
@@ -26,7 +27,7 @@ const SignInApp = (props) => {
         } else {
             setIsReady(true);
         }
-    }, [authUser]);
+    }, []);
 
     const handleSignIn = async (_, value) => {
         const { email, password } = value;
@@ -43,7 +44,8 @@ const SignInApp = (props) => {
 
         try {
             setIsSubmitting(true);
-            signInApp(value)
+            await signInApp(value);
+            router.push("/");
         } catch (error) {
             switch (error?.code) {
                 case "auth/wrong-password":
