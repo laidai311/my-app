@@ -3,7 +3,7 @@ import useFirebaseAuth from "@/libs/useFirebaseAuth";
 
 const authUserContext = createContext({
     authUser: null,
-    isLoading: true,
+    isLoading: false,
     authStateChanged: async () => {},
     signInApp: async () => {},
     signOutApp: async () => {},

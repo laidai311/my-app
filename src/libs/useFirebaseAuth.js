@@ -57,7 +57,7 @@ const formatAuthUser = async (user) => {
 const useFirebaseAuth = () => {
     const [{ authUser, isLoading }, dispatch] = useReducer(reducer, {
         authUser: null,
-        isLoading: true,
+        isLoading: false,
     });
 
     const authStateChanged = async (rawUser) => {

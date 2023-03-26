@@ -24,6 +24,9 @@ export default function HomePage() {
                     )}
                 </div>
                 email: {authUser?.email}
+                <div className=''>
+                    <Link href='/admin' className="btn">Admin</Link>
+                </div>
                 <div className="form-control w-full max-w-xs">
                     <label className="label">
                         <span className="label-text">What is your name?</span>
