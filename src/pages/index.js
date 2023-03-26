@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthUserContext";
 import { useUserStore } from "@/libs/store";
 import useFirebaseAuth from "@/libs/useFirebaseAuth";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, onIdTokenChanged } from "firebase/auth";
 import { auth } from "@/configs/firebase";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
@@ -15,15 +15,31 @@ export default function HomePage() {
     const { signOutApp } = useFirebaseAuth();
     const { user, setUser } = useUserStore();
     const [email, setEmail] = useState("loading...");
+    const [email2, setEmail2] = useState("loading...");
 
     useEffect(() => {
         const handleUser = (user) => {
             if (user) {
                 setEmail(user?.email);
+            } else {
+                setEmail("Thất bại");
             }
         };
-        const unsubscribe = () => onAuthStateChanged(auth, handleUser);
-        return () => unsubscribe();
+        const handleUser2 = (user) => {
+            if (user) {
+                setEmail2(user?.email);
+            } else {
+                setEmail2("That bai");
+            }
+        };
+        // const unsubscribe = () => 
+        onAuthStateChanged(auth, handleUser);
+        // const unsubscribe2 = () => 
+        onIdTokenChanged(auth, handleUser2);
+        // return () => {
+        //     unsubscribe();
+        //     unsubscribe2();
+        // };
     }, []);
 
     return (
@@ -56,6 +72,7 @@ export default function HomePage() {
                 <div className="">email auth: {auth?.currentUser?.email}</div>
                 <div className="">email2: {user?.email}</div>
                 <div className="">email3: {email}</div>
+                <div className="">email4: {email2}</div>
                 <div className="">
                     <Link href="/admin" className="btn">
                         Admin
