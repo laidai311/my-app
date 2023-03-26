@@ -23,7 +23,7 @@ export default function HomePage() {
                         </Link>
                     )}
                 </div>
-
+                email: {user?.email}
                 <div className="form-control w-full max-w-xs">
                     <label className="label">
                         <span className="label-text">What is your name?</span>
@@ -43,7 +43,6 @@ export default function HomePage() {
                         </span>
                     </label>
                 </div>
-
                 <div className="form-control">
                     <label className="label">
                         <span className="label-text">Your bio</span>
@@ -58,7 +57,6 @@ export default function HomePage() {
                         <span className="label-text-alt">Alt label</span>
                     </label>
                 </div>
-
                 <div className="form-control w-full max-w-xs">
                     <label className="label">
                         <span className="label-text">Pick a file</span>
@@ -74,7 +72,6 @@ export default function HomePage() {
                         <span className="label-text-alt">Alt label</span>
                     </label>
                 </div>
-
                 <div className="form-control w-full max-w-xs">
                     <label className="label">
                         <span className="label-text">Pick a file</span>

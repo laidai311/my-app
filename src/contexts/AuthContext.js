@@ -4,6 +4,7 @@ import {
     browserLocalPersistence,
     browserSessionPersistence,
     onAuthStateChanged,
+    onIdTokenChanged,
     setPersistence,
     signInWithEmailAndPassword,
     signOut,
@@ -90,7 +91,7 @@ const useFirebaseAuth = () => {
     };
 
     useEffect(() => {
-        const unsubscribe = () => onAuthStateChanged(auth, handleUser);
+        const unsubscribe = () => onIdTokenChanged(auth, handleUser);
         return () => unsubscribe();
     }, []);
 
