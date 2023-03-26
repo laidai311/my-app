@@ -60,7 +60,7 @@ const BaseLayout = ({ children }) => {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main>{isReady ? children : <FullPageLoader />}</main>
+            <main>{true || isReady ? children : <FullPageLoader />}</main>
         </>
     );
 };

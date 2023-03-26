@@ -26,8 +26,8 @@ const SignInApp = (props) => {
         if (user) {
             router.push("/");
         } else {
-            setIsReady(true);
         }
+        setIsReady(true);
     }, [user]);
 
     const handleSignIn = async (_, value) => {
