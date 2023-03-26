@@ -1,9 +1,9 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthUserContext";
 
 export default function HomePage() {
-    const { user, signOutApp } = useAuth();
+    const { authUser, signOutApp } = useAuth();
 
     return (
         <>
@@ -13,7 +13,7 @@ export default function HomePage() {
             <main>
                 <button className="btn btn-primary">Button</button>
                 <div className="">
-                    {user ? (
+                    {authUser ? (
                         <button className="btn btn-accent" onClick={signOutApp}>
                             Sign out
                         </button>
@@ -23,7 +23,7 @@ export default function HomePage() {
                         </Link>
                     )}
                 </div>
-                email: {user?.email}
+                email: {authUser?.email}
                 <div className="form-control w-full max-w-xs">
                     <label className="label">
                         <span className="label-text">What is your name?</span>

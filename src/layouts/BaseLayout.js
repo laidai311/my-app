@@ -1,5 +1,5 @@
 import { routes } from "@/configs/routes";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthUserContext";
 import { useEffect, useState } from "react";
 import { useResizeWindow } from "@/libs/hooks";
 import { useRouter } from "next/router";

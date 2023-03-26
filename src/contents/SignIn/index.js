@@ -1,19 +1,20 @@
 import { emailValidator } from "./EmailField";
 import { motion, AnimatePresence } from "framer-motion";
 import { passwordValidator } from "./PasswordField";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthUserContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import FullPageLoader from "@/components/FullPageLoader";
 import PreviewAccounts from "./PreviewAccounts";
 import SignInForm from "./SignInForm";
+import Cookies from "js-cookie";
 
 const SignInApp = (props) => {
     const [data, setData] = useState();
     const [errors, setErrors] = useState();
     const [isReady, setIsReady] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState();
-    const { user, signIn } = useAuth();
+    const { authUser, signInApp } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
@@ -21,12 +22,12 @@ const SignInApp = (props) => {
     }, [router]);
 
     useEffect(() => {
-        if (user) {
+        if (authUser) {
             router.push("/");
         } else {
             setIsReady(true);
         }
-    }, [user]);
+    }, [authUser]);
 
     const handleSignIn = async (_, value) => {
         const { email, password } = value;
@@ -44,7 +45,18 @@ const SignInApp = (props) => {
         try {
             setIsSubmitting(true);
 
-            await signIn(value);
+            const res = await signInApp(value);
+
+            Cookies.set(
+                `account-${email}`,
+                JSON.stringify({
+                    email,
+                    password: !!isRemember ? password : "",
+                    name: res?.user.name,
+                    photoURL: res?.user.photoURL,
+                }),
+                { expires: 7 }
+            );
         } catch (error) {
             switch (error?.code) {
                 case "auth/wrong-password":
