@@ -3,13 +3,14 @@ import { useEffect, useReducer } from "react";
 import {
     browserLocalPersistence,
     browserSessionPersistence,
-    onAuthStateChanged,
+    getIdTokenResult,
     setPersistence,
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
 import Cookies from "js-cookie";
 import { useAuthStore } from "./store";
+import { useRouter } from "next/navigation";
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -41,7 +42,7 @@ const reducer = (state, action) => {
 
 const formatAuthUser = async (user) => {
     // const token = await user.getIdToken(/* forceRefresh */ true);
-    const decodedToken = await user.getIdTokenResult(true);
+    const decodedToken = await getIdTokenResult(user, true);
     const { token, expirationTime } = decodedToken;
 
     return {
@@ -59,9 +60,9 @@ const formatAuthUser = async (user) => {
 const useFirebaseAuth = () => {
     const [{ authUser, isLoading }, dispatch] = useReducer(reducer, {
         authUser: null,
-        isLoading: false,
+        isLoading: true,
     });
-    const { setUser } = useAuthStore();
+    const router = useRouter();
 
     const authStateChanged = async (rawUser) => {
         dispatch({ type: "FETCH_AUTH_USER_INIT" });
@@ -72,6 +73,7 @@ const useFirebaseAuth = () => {
 
             // createUser(user.uid, userWithoutToken);
             // setAccessToken(user.token);
+            Cookies.set(`auth`, JSON.stringify(user));
             dispatch({ type: "FETCH_AUTH_USER_SUCCESS", payload: user });
             return user;
         } else {
@@ -81,34 +83,43 @@ const useFirebaseAuth = () => {
     };
 
     useEffect(() => {
-        const unsubscribe = () => onAuthStateChanged(auth, authStateChanged);
+        const unsubscribe = () => {
+            const local = Cookies.get("auth");
+            if (local) {
+                const auth = JSON.parse(local);
+                dispatch({ type: "FETCH_AUTH_USER_SUCCESS", payload: auth });
+            } else {
+                dispatch({ type: "FETCH_AUTH_USER_FAILURE" });
+            }
+        };
         return () => unsubscribe();
-    }, []);
+    }, [router]);
 
     const signInApp = async ({ email, password, isRemember }) => {
         await setPersistence(
             auth,
             isRemember ? browserLocalPersistence : browserSessionPersistence
         );
-        return signInWithEmailAndPassword(auth, email, password).then((res) => {
-            formatAuthUser(res.user).then((res) => {
-                setUser(res);
-            });
-            Cookies.set(
-                `account-${email}`,
-                JSON.stringify({
-                    email,
-                    password: !!isRemember ? password : "",
-                    name: res?.user.name,
-                    photoURL: res?.user.photoURL,
-                }),
-                { expires: 7 }
-            );
-        });
+        return signInWithEmailAndPassword(auth, email, password).then(
+            (userCredential) => {
+                authStateChanged(userCredential.user);
+                Cookies.set(
+                    `account-${email}`,
+                    JSON.stringify({
+                        email,
+                        password: !!isRemember ? password : "",
+                        name: res?.user.name,
+                        photoURL: res?.user.photoURL,
+                    }),
+                    { expires: 7 }
+                );
+            }
+        );
     };
 
     const clearUser = () => {
         dispatch({ type: "CLEAR_AUTH_USER" });
+        Cookies.remove("auth");
     };
 
     const signOutApp = () => signOut(auth).then(clearUser);

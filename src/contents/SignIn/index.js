@@ -27,7 +27,7 @@ const SignInApp = (props) => {
         } else {
             setIsReady(true);
         }
-    }, []);
+    }, [authUser]);
 
     const handleSignIn = async (_, value) => {
         const { email, password } = value;
