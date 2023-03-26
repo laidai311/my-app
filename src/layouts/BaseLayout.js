@@ -7,12 +7,15 @@ import FullPageLoader from "@/components/FullPageLoader";
 import Head from "next/head";
 import Cookies from "js-cookie";
 import { useUserStore } from "@/libs/store";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/configs/firebase";
 
 const BaseLayout = ({ children }) => {
     // const { user, isLoading } = useAuth();
     const router = useRouter();
     useResizeWindow();
     const { setUser } = useUserStore();
+    const [isReady, setIsReady] = useState(false);
 
     // useEffect(() => {
     //     router.prefetch("/sign-in");
@@ -33,14 +36,20 @@ const BaseLayout = ({ children }) => {
     // }, [user, isLoading]);
 
     useEffect(() => {
-        const unsubscribe = () => {
-            const local = Cookies.get("user");
-            if (local) {
-                const userLocal = JSON.parse(local);
-                setUser(userLocal);
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const formatUser = {
+                    uid: user?.uid,
+                    email: user?.email,
+                    name: user?.displayName,
+                    photoURL: user?.photoURL,
+                    token: user?.accessToken,
+                    refreshToken: user?.refreshToken,
+                };
+                setUser(formatUser);
             }
-        };
-        return () => unsubscribe();
+            setIsReady(true);
+        });
     }, []);
 
     return (
@@ -55,7 +64,7 @@ const BaseLayout = ({ children }) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             {/* <main>{isLoading ? <FullPageLoader /> : children}</main> */}
-            <main>{children}</main>
+            <main>{isReady ? children : <FullPageLoader />}</main>
         </>
     );
 };
