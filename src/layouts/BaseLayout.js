@@ -7,7 +7,6 @@ import FullPageLoader from "@/components/FullPageLoader";
 import Head from "next/head";
 
 const BaseLayout = ({ children }) => {
-    const [isReady, setIsReady] = useState(false);
     const { user, isLoading } = useAuth();
     const router = useRouter();
     useResizeWindow();
@@ -26,8 +25,6 @@ const BaseLayout = ({ children }) => {
 
             if (!isPublic && !user) {
                 router.push("/sign-in");
-            } else {
-                setIsReady(true);
             }
         }
     }, [user, isLoading]);
@@ -43,7 +40,7 @@ const BaseLayout = ({ children }) => {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main>{isLoading && !isReady ? <FullPageLoader /> : children}</main>
+            <main>{isLoading ? <FullPageLoader /> : children}</main>
         </>
     );
 };
