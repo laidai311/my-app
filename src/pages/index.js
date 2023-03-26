@@ -3,14 +3,25 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthUserContext";
 import { useUserStore } from "@/libs/store";
 import useFirebaseAuth from "@/libs/useFirebaseAuth";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "@/configs/firebase";
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
 
 export default function HomePage() {
     // const { authUser, signOutApp } = useAuth();
     const { signOutApp } = useFirebaseAuth();
     const { user, setUser } = useUserStore();
+    const [email, setEmail] = useState("loading...");
+
+    useEffect(() => {
+        const handleUser = (user) => {
+            setEmail(user.email);
+        };
+        const unsubscribe = () => onAuthStateChanged(auth, handleUser);
+        return () => unsubscribe();
+    }, []);
 
     return (
         <>
@@ -41,6 +52,7 @@ export default function HomePage() {
                 {/* email: {authUser?.email} */}
                 <div className="">email auth: {auth?.currentUser?.email}</div>
                 <div className="">email2: {user?.email}</div>
+                <div className="">email3: {email}</div>
                 <div className="">
                     <Link href="/admin" className="btn">
                         Admin

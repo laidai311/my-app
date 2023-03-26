@@ -10,6 +10,7 @@ import FullPageLoader from "@/components/FullPageLoader";
 import PreviewAccounts from "./PreviewAccounts";
 import SignInForm from "./SignInForm";
 import Cookies from "js-cookie";
+import Link from "next/link";
 
 const SignInApp = (props) => {
     const [data, setData] = useState();
@@ -122,13 +123,13 @@ const SignInApp = (props) => {
                             >
                                 <div className="artboard artboard-horizontal px-6 md:px-12 py-8 space-y-6">
                                     <h1 className="text-5xl font-bold flex items-center space-x-3 select-none mt-3">
-                                        <span className="group">
+                                        <Link href='/' className="group ">
                                             <span className="relative text-primary font-semibold">
                                                 Hi!
                                                 <span className="absolute bottom-0 left-0 h-1 bg-primary transition-all duration-500 ease-out group-hover:w-0 w-full"></span>
                                             </span>{" "}
                                             there.
-                                        </span>
+                                        </Link>
                                         <img
                                             src="/logo.png"
                                             className="w-10 h-10 pointer-events-none animate-bounce"
