@@ -7,7 +7,7 @@ import Link from "next/link";
 const AdminApp = (props) => {
     const { authUser, loading } = useAuth();
     const router = useRouter();
-console.log(authUser);
+
     useEffect(() => {
         router.prefetch("/");
     }, [router]);

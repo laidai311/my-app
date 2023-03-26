@@ -8,6 +8,7 @@ import {
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
+import Cookies from "js-cookie";
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -87,7 +88,18 @@ const useFirebaseAuth = () => {
             auth,
             isRemember ? browserLocalPersistence : browserSessionPersistence
         );
-        return signInWithEmailAndPassword(auth, email, password);
+        return signInWithEmailAndPassword(auth, email, password).then((res) => {
+            Cookies.set(
+                `account-${email}`,
+                JSON.stringify({
+                    email,
+                    password: !!isRemember ? password : "",
+                    name: res?.user.name,
+                    photoURL: res?.user.photoURL,
+                }),
+                { expires: 7 }
+            );
+        });
     };
 
     const clearUser = () => {

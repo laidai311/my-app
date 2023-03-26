@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import FullPageLoader from "@/components/FullPageLoader";
 import PreviewAccounts from "./PreviewAccounts";
 import SignInForm from "./SignInForm";
-import Cookies from "js-cookie";
 
 const SignInApp = (props) => {
     const [data, setData] = useState();
@@ -44,19 +43,7 @@ const SignInApp = (props) => {
 
         try {
             setIsSubmitting(true);
-
-            const res = await signInApp(value);
-
-            Cookies.set(
-                `account-${email}`,
-                JSON.stringify({
-                    email,
-                    password: !!isRemember ? password : "",
-                    name: res?.user.name,
-                    photoURL: res?.user.photoURL,
-                }),
-                { expires: 7 }
-            );
+            signInApp(value)
         } catch (error) {
             switch (error?.code) {
                 case "auth/wrong-password":
