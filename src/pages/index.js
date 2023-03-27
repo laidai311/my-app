@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthUserContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/configs/firebase";
 import Cookies from "js-cookie";
-import CustomEditor from "@/components/Tinymce/CustomEditor";
+import CustomEditor from "@/components/CustomEditor";
 import BarLayout from "@/layouts/BarLayout";
 
 export default function HomePage() {
