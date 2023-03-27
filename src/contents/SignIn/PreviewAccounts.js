@@ -9,8 +9,8 @@ const PreviewAccounts = ({ onClick, disabled }) => {
 
         setEmails(() =>
             Object.entries(local)
-                .filter((item) => item[0].startsWith("account"))
-                .map((item) => JSON.parse(item[1]))
+                .filter((item) => item?.[0].startsWith("account"))
+                .map((item) => JSON.parse(item?.[1]))
         );
     }, []);
 
@@ -48,7 +48,7 @@ const PreviewAccounts = ({ onClick, disabled }) => {
                     onClick={() => handleClick(item)}
                     disabled={!!disabled}
                 >
-                    {item.photoUrl ? (
+                    {item?.photoUrl ? (
                         <div className="avatar">
                             <div className="w-12 h-12 rounded-full mx-auto">
                                 <img src={item?.photoURL || item?.photoUrl} />
@@ -58,13 +58,13 @@ const PreviewAccounts = ({ onClick, disabled }) => {
                         <div className="avatar placeholder">
                             <div className="bg-neutral-focus text-neutral-content rounded-full w-12 h-12 mx-auto">
                                 <span className="text-xl uppercase">
-                                    {item.email[0]}
+                                    {item?.email?.[0] || ''}
                                 </span>
                             </div>
                         </div>
                     )}
                     <div className="text-xs text-center">
-                        {item?.email?.split("@")[0]}
+                        {item?.email?.split("@")?.[0] || ''}
                     </div>
                 </button>
             ))}

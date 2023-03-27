@@ -1,46 +1,14 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthUserContext";
-import { useUserStore } from "@/libs/store";
-import useFirebaseAuth from "@/libs/useFirebaseAuth";
-import { onAuthStateChanged, signOut, onIdTokenChanged } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth } from "@/configs/firebase";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
-import { getAuth } from "firebase/auth";
-import CustomEditor from "@/components/tinymce/CustomEditor";
+import CustomEditor from "@/components/Tinymce/CustomEditor";
+import BarLayout from "@/layouts/BarLayout";
 
 export default function HomePage() {
-    // const { authUser, signOutApp } = useAuth();
-    const { signOutApp } = useFirebaseAuth();
-    const { user, setUser } = useUserStore();
-    const [email, setEmail] = useState("loading...");
-    const [email2, setEmail2] = useState("loading...");
-
-    useEffect(() => {
-        const handleUser = (user) => {
-            if (user) {
-                setEmail(user?.email);
-            } else {
-                setEmail("Thất bại");
-            }
-        };
-        const handleUser2 = (user) => {
-            if (user) {
-                setEmail2(user?.email);
-            } else {
-                setEmail2("That bai");
-            }
-        };
-        // const unsubscribe = () => 
-        onAuthStateChanged(auth, handleUser);
-        // const unsubscribe2 = () => 
-        onIdTokenChanged(auth, handleUser2);
-        // return () => {
-        //     unsubscribe();
-        //     unsubscribe2();
-        // };
-    }, []);
+    const { authUser } = useAuth();
 
     return (
         <>
@@ -50,7 +18,7 @@ export default function HomePage() {
             <main>
                 <button className="btn btn-primary">Button</button>
                 <div className="">
-                    {user ? (
+                    {authUser ? (
                         <button
                             className="btn btn-accent"
                             onClick={() => {
@@ -68,15 +36,34 @@ export default function HomePage() {
                         </Link>
                     )}
                 </div>
-                {/* email: {authUser?.email} */}
-                <div className="">email auth: {auth?.currentUser?.email}</div>
-                <div className="">email2: {user?.email}</div>
-                <div className="">email3: {email}</div>
-                <div className="">email4: {email2}</div>
+
                 <div className="">
                     <Link href="/admin" className="btn">
                         Admin
                     </Link>
+                </div>
+                {/* The button to open modal */}
+                <label htmlFor="my-modal" className="btn">
+                    open modal
+                </label>
+
+                {/* Put this part before </body> tag */}
+                <input type="checkbox" id="my-modal" className="modal-toggle" />
+                <div className="modal">
+                    <div className="modal-box">
+                        <h3 className="font-bold text-lg">
+                            Congratulations random Internet user!
+                        </h3>
+                        <p className="py-4">
+                            You've been selected for a chance to get one year of
+                            subscription to use Wikipedia for free!
+                        </p>
+                        <div className="modal-action">
+                            <label htmlFor="my-modal" className="btn">
+                                Yay!
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <CustomEditor />
                 <div className="form-control w-full max-w-xs">
@@ -147,4 +134,4 @@ export default function HomePage() {
     );
 }
 
-// HomePage.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
+HomePage.getLayout = (page) => <BarLayout>{page}</BarLayout>;

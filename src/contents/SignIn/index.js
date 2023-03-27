@@ -1,23 +1,19 @@
 import { emailValidator } from "./EmailField";
 import { motion, AnimatePresence } from "framer-motion";
 import { passwordValidator } from "./PasswordField";
+import { useAuth } from "@/contexts/AuthUserContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/libs/store";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/configs/firebase";
 import FullPageLoader from "@/components/FullPageLoader";
+import Link from "next/link";
 import PreviewAccounts from "./PreviewAccounts";
 import SignInForm from "./SignInForm";
-import Cookies from "js-cookie";
-import Link from "next/link";
 
 const SignInApp = (props) => {
     const [data, setData] = useState();
     const [errors, setErrors] = useState();
     const [isReady, setIsReady] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState();
-    const { user, setUser } = useUserStore();
+    const { authUser, isLoading, signInApp } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
@@ -25,15 +21,18 @@ const SignInApp = (props) => {
     }, [router]);
 
     useEffect(() => {
-        if (user) {
+        setIsReady(false);
+        if (authUser) {
             router.push("/");
         } else {
-            setIsReady(true);
+            if (!isLoading) {
+                setIsReady(true);
+            }
         }
-    }, [user]);
+    }, [authUser]);
 
     const handleSignIn = async (_, value) => {
-        const { email, password, isRemember } = value;
+        const { email, password } = value;
         const emailMsg = emailValidator(email);
         const passwordMsg = passwordValidator(password);
 
@@ -46,32 +45,7 @@ const SignInApp = (props) => {
         }
 
         try {
-            setIsSubmitting(true);
-            const userCredential = await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
-            const formatUser = {
-                uid: userCredential.user.uid,
-                email: userCredential.user.email,
-                name: userCredential.user.displayName,
-                photoURL: userCredential.user.photoURL,
-                token: userCredential.user.accessToken,
-                refreshToken: userCredential.user.refreshToken,
-            };
-            const account = {
-                password: !!isRemember ? password : "",
-                email: userCredential.user.email,
-                name: userCredential.user.displayName,
-                photoURL: userCredential.user.photoURL,
-            };
-
-            Cookies.set(`user`, JSON.stringify(formatUser));
-            Cookies.set(`account-${email}`, JSON.stringify(account), {
-                expires: 7,
-            });
-            setUser(formatUser);
+            await signInApp(value);
         } catch (error) {
             switch (error?.code) {
                 case "auth/wrong-password":
@@ -123,7 +97,7 @@ const SignInApp = (props) => {
                             >
                                 <div className="artboard artboard-horizontal px-6 md:px-12 py-8 space-y-6">
                                     <h1 className="text-5xl font-bold flex items-center space-x-3 select-none mt-3">
-                                        <Link href='/' className="group ">
+                                        <Link href="/" className="group ">
                                             <span className="relative text-primary font-semibold">
                                                 Hi!
                                                 <span className="absolute bottom-0 left-0 h-1 bg-primary transition-all duration-500 ease-out group-hover:w-0 w-full"></span>
@@ -136,7 +110,7 @@ const SignInApp = (props) => {
                                         />{" "}
                                     </h1>
                                     <PreviewAccounts
-                                        disabled={isSubmitting}
+                                        disabled={isLoading}
                                         onClick={(value) => {
                                             if (value?.isActive) {
                                                 setData({
@@ -155,7 +129,7 @@ const SignInApp = (props) => {
                                     <SignInForm
                                         initialValues={data}
                                         onSubmit={handleSignIn}
-                                        disabled={isSubmitting}
+                                        disabled={isLoading}
                                         errors={errors}
                                     />
                                 </div>

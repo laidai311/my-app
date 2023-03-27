@@ -82,8 +82,8 @@ const PasswordField = ({ disabled, error }) => {
                             : ""
                     }`}
                     disabled={disabled}
-                    onChange={(e) => {
-                        setData({ isLoading: true });
+                    onBlur={(e) => {
+                        // setData({ isLoading: true });
                         debounceValue(e.target.value);
                     }}
                     autoComplete="new-password"

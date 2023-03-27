@@ -47,8 +47,8 @@ const EmailField = ({ disabled, error }) => {
                 }`}
                 disabled={!!disabled}
                 onFocus={(e) => e.preventDefault()}
-                onChange={(e) => {
-                    setData({ isLoading: true });
+                onBlur={(e) => {
+                    // setData({ isLoading: true });
                     debounceValue(e.target.value);
                 }}
                 role="presentation"
