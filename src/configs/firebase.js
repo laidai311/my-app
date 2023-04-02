@@ -17,16 +17,6 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
 
-// const firebaseConfig = {
-//     apiKey: "AIzaSyBypBzZDT83M22jRDM9WbIJKXZDHn7AfzU",
-//     authDomain: "dailai-9966.firebaseapp.com",
-//     projectId: "dailai-9966",
-//     storageBucket: "dailai-9966.appspot.com",
-//     messagingSenderId: "204791742213",
-//     appId: "1:204791742213:web:fdd81f0c2c97e6e5d9816c",
-//     measurementId: "G-SG3BCE2F2C",
-// };
-
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
