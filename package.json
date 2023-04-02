@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@fancyapps/ui": "^5.0.13",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
