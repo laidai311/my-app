@@ -2,6 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import { createCSSVariable } from "./utils";
 import { debounce } from "lodash";
 
+export const useLockBody = (isOpen) => {
+    useEffect(() => {
+        const body = document.body;
+        if (isOpen) {
+            body.style.overflow = "hidden";
+            body.style.touchAction = "none";
+        } else {
+            body.style.overflow = "unset";
+            body.style.touchAction = "unset";
+        }
+    }, [isOpen]);
+};
+
 export const useResizeWindow = () => {
     useEffect(() => {
         const syncHeight = () => {
@@ -47,7 +60,7 @@ export const useFullscreenMode = () => {
     const elementRef = useRef();
 
     useEffect(() => {
-        const changeHandler = () => setFullscreen(mode => !mode);
+        const changeHandler = () => setFullscreen((mode) => !mode);
 
         document.addEventListener("fullscreenchange", changeHandler, false);
         document.addEventListener("mozfullscreenchange", changeHandler, false);
@@ -97,7 +110,7 @@ export const useFullscreenMode = () => {
     };
 
     const ToggleIcon = (
-        <div className=''>
+        <div className="">
             {/* <FontAwesomeIcon
                 icon={!isFullscreen ? "expand" : "compress"}
                 onClick={() => (!isFullscreen ? goFullscreen() : exitFullScreen())}

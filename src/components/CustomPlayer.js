@@ -6,7 +6,6 @@ const CustomPlayer = (props) => {
             <ReactPlayer
                 className="absolute top-0 left-0 !w-full !h-full bg-black"
                 controls
-                light
                 url="https://khonhapho.sgp1.cdn.digitaloceanspaces.com/mov-1-1679911224135.mov"
             />
         </div>

@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const Sidebar = (props) => {
     return (
         <div className="">
-            <ul className="menu bg-base-100 w-56 p-2 rounded-box">
+            <ul className="menu menu-compact bg-base-100 w-56 p-2 rounded-box space-y-1">
                 <li>
-                    <a>
+                    <a className="active">
                         <FontAwesomeIcon icon={faHouse} className='w-4 h-4'/>
                         Item 2
                     </a>
