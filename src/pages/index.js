@@ -40,6 +40,15 @@ export default function HomePage() {
         <title>DaiLai 9966</title>
       </Head>
       <main>
+        <button
+          onClick={() => {
+            let text = '@abc ';
+            let result = /\s{2,}|[.]/g.test(text);
+            alert(result);
+          }}
+        >
+          click
+        </button>
         <div className="border p-2 rounded-md inline-block">
           <Form
             onSubmit={(e, value) => {
