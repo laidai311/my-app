@@ -15,6 +15,11 @@ import ListExample from '@/components/ReactVitualized/List';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import dictionaryApi from '@/api/dictionary';
 import Form from '@/components/Form';
+import {
+  disableBodyScroll,
+  enableBodyScroll,
+  clearAllBodyScrollLocks,
+} from 'body-scroll-lock';
 
 const list = Array(200)
   .fill()
@@ -42,12 +47,17 @@ export default function HomePage() {
       <main>
         <button
           onClick={() => {
-            let text = '@abc ';
-            let result = /\s{2,}|[.]/g.test(text);
-            alert(result);
+            disableBodyScroll(document.body);
           }}
         >
           click
+        </button>
+        <button
+          onClick={() => {
+            enableBodyScroll(document.body)
+          }}
+        >
+          click 2
         </button>
         <div className="border p-2 rounded-md inline-block">
           <Form

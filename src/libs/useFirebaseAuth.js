@@ -11,7 +11,7 @@ import {
 } from 'firebase/auth';
 import Cookies from 'js-cookie';
 import { setAccessToken } from '@/configs/axios';
-
+// 'checking' | 'authenticated' | 'no-authenticated'
 const reducer = (state, action) => {
   switch (action.type) {
     case 'AUTH_USER_INIT':

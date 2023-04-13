@@ -8,7 +8,15 @@ import nProgress from 'nprogress';
 import RouteGuard from '@/components/RouteGuard';
 import Router from 'next/router';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      retry: 1,
+    },
+  },
+});
 
 export default function App({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => page);

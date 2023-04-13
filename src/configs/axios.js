@@ -6,14 +6,14 @@ export const setAccessToken = (_accessToken) => {
   accessToken = _accessToken;
 };
 
-export const api = axios.create({
+export const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_ENDPOINT_BASE_URL || '',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-api.interceptors.request.use(async (config) => {
+client.interceptors.request.use(async (config) => {
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
@@ -21,7 +21,7 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-api.interceptors.response.use(
+client.interceptors.response.use(
   (response) => {
     return response;
   },

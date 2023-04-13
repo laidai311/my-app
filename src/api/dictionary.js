@@ -1,9 +1,9 @@
-import { api } from '@/configs/axios';
+import { client } from '@/configs/axios';
 
 export default {
   insertDictionary: async (args = {}) => {
     try {
-      const res = await api.post('/api/dictionary/insert', {
+      const res = await client.post('/api/dictionary/insert', {
         ...args,
       });
       return res.data;
