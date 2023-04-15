@@ -1,5 +1,6 @@
-import { auth } from '@/configs/firebase';
-import { useEffect, useReducer } from 'react';
+import { AuthContext } from './AuthContext';
+import { auth } from './firebase';
+import { useEffect, useMemo, useReducer } from 'react';
 import {
   browserLocalPersistence,
   browserSessionPersistence,
@@ -11,67 +12,63 @@ import {
 } from 'firebase/auth';
 import Cookies from 'js-cookie';
 import { setAccessToken } from '@/configs/axios';
-// 'checking' | 'authenticated' | 'no-authenticated'
+
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'AUTH_USER_INIT':
+    case 'FETCH_INIT':
       return {
         ...state,
         isLoading: true,
+        status: 'checking',
       };
-    case 'FETCH_AUTH_USER_SUCCESS':
+    case 'FETCH_SUCCESS':
       return {
         ...state,
         isLoading: false,
-        authUser: action.payload,
+        user: action.payload,
+        status: 'authenticated',
       };
-    case 'FETCH_AUTH_USER_FAILURE':
+    case 'FETCH_FAILURE':
       return {
         ...state,
         isLoading: false,
+        status: 'no-authenticated',
       };
-    case 'AUTH_USER_CLEAR':
+    case 'AUTH_CLEAR':
       return {
-        authUser: null,
+        user: null,
         isLoading: false,
+        status: 'checking',
       };
     default:
       throw Error('Unknown action.');
   }
 };
 
-const formatAuthUser = (user) => ({
-  uid: user?.uid,
-  email: user?.email,
-  name: user?.displayName,
-  photoURL: user?.photoURL,
-  token: user?.accessToken,
-  refreshToken: user?.refreshToken,
-});
-
-const useFirebaseAuth = () => {
-  const [{ authUser, isLoading }, dispatch] = useReducer(reducer, {
-    authUser: null,
+export const AuthProvider = (props) => {
+  const [state, dispatch] = useReducer(reducer, {
+    user: null,
     isLoading: true,
+    status: 'checking', // 'checking' | 'authenticated' | 'no-authenticated'
   });
 
   const handleAuthStateChanged = (rawUser) => {
     if (rawUser) {
-      const user = formatAuthUser(rawUser);
-      dispatch({ type: 'FETCH_AUTH_USER_SUCCESS', payload: user });
+      const user = formatUser(rawUser);
+      dispatch({ type: 'FETCH_SUCCESS', payload: user });
       setAccessToken(user.token);
     } else {
-      dispatch({ type: 'FETCH_AUTH_USER_FAILURE' });
+      dispatch({ type: 'FETCH_FAILURE' });
     }
   };
 
   useEffect(() => {
-    dispatch({ type: 'AUTH_USER_INIT' });
     onAuthStateChanged(auth, handleAuthStateChanged);
   }, []);
 
   const signInApp = ({ email, password, isRemember }) => {
-    dispatch({ type: 'AUTH_USER_INIT' });
+    dispatch({ type: 'FETCH_INIT' });
+
     setPersistence(
       auth,
       isRemember ? browserLocalPersistence : browserSessionPersistence
@@ -97,16 +94,16 @@ const useFirebaseAuth = () => {
     });
   };
 
-  const clearAuthUser = () => {
-    dispatch({ type: 'AUTH_USER_CLEAR' });
+  const clearAuth = () => {
+    dispatch({ type: 'AUTH_CLEAR' });
   };
 
   const signOutApp = () => {
-    dispatch({ type: 'AUTH_USER_INIT' });
-    signOut(auth).then(clearAuthUser);
+    dispatch({ type: 'FETCH_INIT' });
+    signOut(auth).then(clearAuth);
   };
 
-  const getFreshToken = async () => {
+  const refreshToken = async () => {
     const currentUser = auth.currentUser;
     if (currentUser) {
       const token = await getIdTokenResult(currentUser, false);
@@ -116,13 +113,24 @@ const useFirebaseAuth = () => {
     }
   };
 
-  return {
-    authUser,
-    isLoading,
-    signInApp,
-    signOutApp,
-    getFreshToken,
-  };
+  const val = useMemo(
+    () => ({
+      ...state,
+      signInApp,
+      signOutApp,
+      refreshToken,
+    }),
+    [state]
+  );
+
+  return <AuthContext.Provider value={val} {...props} />;
 };
 
-export default useFirebaseAuth;
+const formatUser = (user) => ({
+  uid: user?.uid,
+  email: user?.email,
+  name: user?.displayName,
+  photoURL: user?.photoURL,
+  token: user?.accessToken,
+  refreshToken: user?.refreshToken,
+});

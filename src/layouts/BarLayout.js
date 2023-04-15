@@ -11,10 +11,10 @@ const BarLayout = ({ children }) => {
     return (
         <div className="">
             <Navbar />
-            <div className="flex-1 min-h-[calc(var(--window-inner-height)_-_64px)]">
+            <div className="flex-1 min-h-[calc(var(--window-inner-height)_-_65px)]">
                 {/* <CustomScrollbars> */}
                 <div className="flex container mx-auto">
-                    <Sidebar />
+                    {/* <Sidebar /> */}
                     <div className="flex-1">
                         <div className="">{children}</div>
                     </div>

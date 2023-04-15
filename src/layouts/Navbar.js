@@ -1,10 +1,10 @@
-import { useAuth } from "@/contexts/AuthUserContext";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
+import { useAuth } from '@/components/Firebase';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Link from 'next/link';
 
 const Sidebar = (props) => {
-  const { authUser, isLoading, signOutApp } = useAuth();
+  const { user, isLoading, signOutApp } = useAuth();
 
   return (
     <div className="border-b">
@@ -15,7 +15,10 @@ const Sidebar = (props) => {
               <label tabIndex={0} className="btn btn-ghost btn-circle">
                 <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
               </label>
-              <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+              <ul
+                tabIndex={0}
+                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+              >
                 <li>
                   <a>Homepage</a>
                 </li>
@@ -30,20 +33,29 @@ const Sidebar = (props) => {
           </div>
           <div className="grow">
             <div className="form-control">
-              <input type="text" placeholder="Search" className="input input-bordered" />
+              {/* <input
+                type="text"
+                placeholder="Search"
+                className="input input-bordered"
+              /> */}
             </div>
           </div>
           <div className="">
-            {authUser ? (
+            {user ? (
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                   <div className="avatar online placeholder">
                     <div className="bg-neutral-focus text-neutral-content rounded-full w-10">
-                      <span className="text-xl uppercase">{authUser?.name?.[0] || authUser?.email?.[0]}</span>
+                      <span className="text-xl uppercase">
+                        {user?.name?.[0] || user?.email?.[0]}
+                      </span>
                     </div>
                   </div>
                 </label>
-                <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
+                <ul
+                  tabIndex={0}
+                  className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+                >
                   <li>
                     <a className="justify-between">
                       Profile
@@ -54,7 +66,12 @@ const Sidebar = (props) => {
                     <a>Settings</a>
                   </li>
                   <li>
-                    <a className={`btn btn-ghost justify-start normal-case ${isLoading ? "loading" : ""}`} onClick={signOutApp}>
+                    <a
+                      className={`btn btn-ghost justify-start normal-case ${
+                        isLoading ? 'loading' : ''
+                      }`}
+                      onClick={signOutApp}
+                    >
                       Logout
                     </a>
                   </li>

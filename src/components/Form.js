@@ -26,7 +26,7 @@ const Form = forwardRef((props, ref) => {
         }
     }, [formRef.current, initialValues]);
 
-    const handleSubmit = useCallback((event) => {
+    const _onSubmit = useCallback((event) => {
         event.preventDefault();
 
         const dataArr = [...new FormData(event.target)];
@@ -37,7 +37,7 @@ const Form = forwardRef((props, ref) => {
         }
     }, []);
 
-    return <form {...restProps} onSubmit={handleSubmit} ref={formRef} />;
+    return <form {...restProps} onSubmit={_onSubmit} ref={formRef} />;
 });
 
 Form.displayName = "Form";

@@ -1,8 +1,9 @@
 import '@/styles/globals.css';
 import 'nprogress/nprogress.css';
 import { AnimatePresence } from 'framer-motion';
-import { AuthUserProvider } from '@/contexts/AuthUserContext';
+import { AuthProvider } from '@/components/Firebase';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastProvider } from '@/components/Toast';
 import BaseLayout from '@/layouts/BaseLayout';
 import nProgress from 'nprogress';
 import RouteGuard from '@/components/RouteGuard';
@@ -33,7 +34,7 @@ export default function App({ Component, pageProps }) {
   Router.events.on('routeChangeComplete', nProgress.done);
 
   return (
-    <AuthUserProvider>
+    <AuthProvider>
       <RouteGuard>
         <AnimatePresence
           mode="wait"
@@ -45,10 +46,12 @@ export default function App({ Component, pageProps }) {
           }}
         >
           <QueryClientProvider client={queryClient}>
-            <BaseLayout>{getLayout(<Component {...pageProps} />)}</BaseLayout>
+            <ToastProvider>
+              <BaseLayout>{getLayout(<Component {...pageProps} />)}</BaseLayout>
+            </ToastProvider>
           </QueryClientProvider>
         </AnimatePresence>
       </RouteGuard>
-    </AuthUserProvider>
+    </AuthProvider>
   );
 }

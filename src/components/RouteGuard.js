@@ -1,11 +1,11 @@
 import { routes } from '@/configs/routes';
-import { useAuth } from '@/contexts/AuthUserContext';
+import { useAuth } from './Firebase';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import FullPageLoader from './FullPageLoader';
 
 const RouteGuard = ({ children }) => {
-  const { authUser, isLoading } = useAuth();
+  const { user, isLoading, status } = useAuth();
   const [isReady, setIsReady] = useState();
   const router = useRouter();
 
@@ -13,23 +13,20 @@ const RouteGuard = ({ children }) => {
     router.prefetch('/sign-in');
   }, [router]);
 
-  const isPublic = useMemo(
-    () =>
-      routes.public.some(
-        (route) => router.asPath.split('?')[0].search(route) >= 0
-      ),
+  const isPublicPath = useMemo(
+    () => routes.public.some((route) => router.asPath.startsWith(route)),
     [router]
   );
 
   useEffect(() => {
-    if (!(isLoading || isPublic || authUser)) {
+    if (!(isLoading || isPublicPath || user || status === 'no-authenticated')) {
       router.push('/sign-in');
     } else {
       if (!isLoading) {
         setIsReady(true);
       }
     }
-  }, [isPublic, isLoading]);
+  }, [isPublicPath, isLoading]);
 
   return isReady ? children : <FullPageLoader />;
 };

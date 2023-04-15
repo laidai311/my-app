@@ -21,7 +21,7 @@ export const withAuth = (handler) => {
         error.status = 500;
       }
       //TODO handlle firebase admin errors in more detail
-      return res.status(error.status).json({ error: errorCode });
+      return res.status(error.status).json({ message: errorCode });
     }
 
     return handler(req, res);
