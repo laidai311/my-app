@@ -175,3 +175,34 @@ export function getScrollOffset(element) {
     };
   }
 }
+
+export const isIosDevice =
+  typeof window !== 'undefined' &&
+  window.navigator &&
+  window.navigator.platform &&
+  (/iP(ad|hone|od)/.test(window.navigator.platform) ||
+    (window.navigator.platform === 'MacIntel' &&
+      window.navigator.maxTouchPoints > 1));
+
+export const getScrollBarWidth = () => {
+  let el = document.createElement('div');
+  el.style.cssText = 'overflow:scroll; visibility:hidden; position:absolute;';
+  document.body.appendChild(el);
+  let width = el.offsetWidth - el.clientWidth;
+  el.remove();
+  return width;
+};
+
+export const hasScrollBar = (element) => {
+  const root = element ? element : document.body;
+  const { scrollTop } = root;
+
+  if (scrollTop > 0) return true;
+
+  root.scrollTop += 10;
+
+  if (scrollTop === root.scrollTop) return false;
+  // undoing the change
+  root.scrollTop = scrollTop;
+  return true;
+};

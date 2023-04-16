@@ -54,44 +54,43 @@ export const AuthProvider = (props) => {
 
   const handleAuthStateChanged = (rawUser) => {
     if (rawUser) {
-      const user = formatUser(rawUser);
-      dispatch({ type: 'FETCH_SUCCESS', payload: user });
-      setAccessToken(user.token);
+      const { token, userWithoutToken } = formatUser(rawUser);
+      dispatch({ type: 'FETCH_SUCCESS', payload: userWithoutToken });
+      setAccessToken(token);
+      return userWithoutToken;
     } else {
       dispatch({ type: 'FETCH_FAILURE' });
     }
+    return null;
   };
 
   useEffect(() => {
     onAuthStateChanged(auth, handleAuthStateChanged);
   }, []);
 
-  const signInApp = ({ email, password, isRemember }) => {
+  const signInApp = async ({ email, password, isRemember }) => {
     dispatch({ type: 'FETCH_INIT' });
 
-    setPersistence(
+    await setPersistence(
       auth,
       isRemember ? browserLocalPersistence : browserSessionPersistence
-    ).then(() => {
-      signInWithEmailAndPassword(auth, email, password).then(
-        (userCredential) => {
-          handleAuthStateChanged(userCredential?.user);
+    );
+    const { user } = await signInWithEmailAndPassword(auth, email, password);
 
-          Cookies.set(
-            `account-${email}`,
-            JSON.stringify({
-              email,
-              password: isRemember ? password : '',
-              name: userCredential?.user?.displayName,
-              photoURL: userCredential?.user?.photoURL,
-            }),
-            {
-              expires: 7,
-            }
-          );
-        }
-      );
-    });
+    handleAuthStateChanged(user);
+
+    Cookies.set(
+      `account-${email}`,
+      JSON.stringify({
+        email,
+        password: isRemember ? password : '',
+        name: user?.displayName,
+        photoURL: user?.photoURL,
+      }),
+      { expires: 7 }
+    );
+
+    return user;
   };
 
   const clearAuth = () => {
@@ -106,11 +105,11 @@ export const AuthProvider = (props) => {
   const refreshToken = async () => {
     const currentUser = auth.currentUser;
     if (currentUser) {
-      const token = await getIdTokenResult(currentUser, false);
+      const { token } = await getIdTokenResult(currentUser, false);
+      setAccessToken(token);
       return `${token}`;
-    } else {
-      return '';
     }
+    return '';
   };
 
   const val = useMemo(
@@ -132,5 +131,5 @@ const formatUser = (user) => ({
   name: user?.displayName,
   photoURL: user?.photoURL,
   token: user?.accessToken,
-  refreshToken: user?.refreshToken,
+  // refreshToken: user?.refreshToken,
 });

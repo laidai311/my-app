@@ -1,7 +1,10 @@
+import { Button } from '@/components';
 import { Table } from '@/components/Table';
 import InfiniteScrollApp from '@/contents/InfiniteScroll';
+import BarLayout from '@/layouts/BarLayout';
 import { styled } from '@stitches/react';
 import Head from 'next/head';
+import { useRouter } from 'next/navigation';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const Span = styled('span', {
@@ -12,7 +15,7 @@ const Span = styled('span', {
   borderRadius: 99999,
 });
 
-export default function DictionaryPage() {
+const DictionaryPage = () => {
   const columns = [
     {
       key: 'fullName',
@@ -55,24 +58,15 @@ export default function DictionaryPage() {
 
   const generateArray = (items) => [...Array.from(Array(items).keys())];
 
+  const router = useRouter();
+
   return (
     <>
       <Head>
         <title>DaiLai 9966</title>
       </Head>
       <div className="overflow-x-auto">
-        {generateArray(15).map((i) => (
-          <LazyLoadImage
-            key={i}
-            src={`https://picsum.photos/id/${i}/500`}
-            alt={`Image Alt-${i}`}
-            className="img-lazy"
-            width={700}
-            height={500}
-            // placeholderSrc={placeholder}
-            // effect="blur" // opacity | black-and-white
-          />
-        ))}
+        <Button onClick={() => router.push('/dictionary/add')}>Add</Button>
         <InfiniteScrollApp />
         {/* <Table data={data} columns={columns} /> */}
         {/* <table className="table table-compact w-full">
@@ -284,4 +278,7 @@ export default function DictionaryPage() {
       </div>
     </>
   );
-}
+};
+
+DictionaryPage.getLayout = (page) => <BarLayout>{page}</BarLayout>;
+export default DictionaryPage;

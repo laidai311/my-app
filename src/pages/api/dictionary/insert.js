@@ -5,11 +5,11 @@ const handler = async (req, res) => {
   const { word, ...param } = req.body;
 
   try {
-    if (!word) throw new Error('Invalid word');
-    if (req.method !== 'POST') throw new Error('Method not supported');
+    if (!word) throw new Error('Invalid word!');
+    if (req.method !== 'POST') throw new Error('Method not supported!');
 
-    const dictionaryRef = db.collection('dictionary').doc('alphabet');
-    const alphabetRef = dictionaryRef.collection(
+    const dictRef = db.collection('dictionary').doc('alphabet');
+    const alphabetRef = dictRef.collection(
       `${word[0].trimStart().toLowerCase()}`
     );
     const snapshot = await alphabetRef.where('word', '==', word).get();
@@ -24,7 +24,8 @@ const handler = async (req, res) => {
       res.status(201).json({
         data: { id },
         status: true,
-        message: 'Created data successfully!',
+        code: 'success',
+        message: 'Inserted document successfully!',
       });
     } else {
       const data = snapshot.docs.map((doc) => ({
@@ -35,13 +36,15 @@ const handler = async (req, res) => {
       res.status(202).json({
         data,
         status: false,
+        code: 'exist',
         message: 'Document exist!',
       });
     }
   } catch (error) {
     res.status(400).json({
       status: false,
-      message: error?.code || error?.message || '',
+      code: 'error',
+      message: error?.message || 'Error!',
     });
   }
 };

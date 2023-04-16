@@ -1,7 +1,7 @@
 import { client } from '@/configs/axios';
 
 export default {
-  insertDictionary: async (args = {}) => {
+  insert: async (args = {}) => {
     try {
       const res = await client.post('/api/dictionary/insert', {
         ...args,

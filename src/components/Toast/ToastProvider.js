@@ -1,9 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { createPortal } from 'react-dom';
-
-import { ToastContext } from './ToastContext';
+import { AnimatePresence } from 'framer-motion';
 import { Toast } from './Toast';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ToastContext } from './ToastContext';
+import React, { useState, useMemo } from 'react';
+import ReactPortal from '../ReactPortal';
 
 // Create a random ID
 function generateUEID() {
@@ -24,29 +23,31 @@ export const ToastProvider = (props) => {
       const arr = [...curr, { ...val, id: generateUEID() }];
       return curr?.length >= LIMIT ? arr.slice(toasts?.length - LIMIT) : arr;
     });
-  const close = (id) => setToasts((curr) => curr.filter((it) => it.id !== id));
+  const onClose = (id) =>
+    setToasts((curr) => curr.filter((it) => it.id !== id));
   const val = useMemo(() => ({ open }), []);
 
   return (
     <ToastContext.Provider value={val}>
       {props.children}
-
-      {createPortal(
-        <motion.div className="absolute right-0 bottom-0 overflow-hidden p-5 space-y-3">
+      {toasts.length > 0 && (
+        <ReactPortal
+          className="fixed right-0 bottom-0 overflow-hidden p-5 space-y-3"
+          style={{ zIndex: 1001 }}
+        >
           <AnimatePresence>
             {toasts.map((it) => (
               <Toast
                 key={it.id}
-                type={it.type}
-                close={() => close(it.id)}
+                color={it.type}
+                onClose={() => onClose(it.id)}
                 timeout={TIMEOUT}
               >
                 {it.content}
               </Toast>
             ))}
           </AnimatePresence>
-        </motion.div>,
-        document.body
+        </ReactPortal>
       )}
     </ToastContext.Provider>
   );
