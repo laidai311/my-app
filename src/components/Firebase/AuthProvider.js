@@ -54,10 +54,10 @@ export const AuthProvider = (props) => {
 
   const handleAuthStateChanged = (rawUser) => {
     if (rawUser) {
-      const { token, userWithoutToken } = formatUser(rawUser);
-      dispatch({ type: 'FETCH_SUCCESS', payload: userWithoutToken });
+      const { token, ...userWithoutToken } = formatUser(rawUser);
+      dispatch({ type: 'FETCH_SUCCESS', payload: { ...userWithoutToken } });
       setAccessToken(token);
-      return userWithoutToken;
+      return { ...userWithoutToken };
     } else {
       dispatch({ type: 'FETCH_FAILURE' });
     }

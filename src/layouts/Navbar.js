@@ -1,3 +1,4 @@
+import { Button } from '@/components';
 import { useAuth } from '@/components/Firebase';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -78,9 +79,9 @@ const Sidebar = (props) => {
                 </ul>
               </div>
             ) : (
-              <Link href="sign-in" className="btn btn-accent btn-md">
+              <Button color="primary" isLink href="/sign-in">
                 Sign in
-              </Link>
+              </Button>
             )}
           </div>
         </div>

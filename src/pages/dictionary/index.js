@@ -4,6 +4,7 @@ import InfiniteScrollApp from '@/contents/InfiniteScroll';
 import BarLayout from '@/layouts/BarLayout';
 import { styled } from '@stitches/react';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
@@ -66,7 +67,9 @@ const DictionaryPage = () => {
         <title>DaiLai 9966</title>
       </Head>
       <div className="overflow-x-auto">
-        <Button onClick={() => router.push('/dictionary/add')}>Add</Button>
+        <Button isLink href="/dictionary/add">
+          Add
+        </Button>
         <InfiniteScrollApp />
         {/* <Table data={data} columns={columns} /> */}
         {/* <table className="table table-compact w-full">

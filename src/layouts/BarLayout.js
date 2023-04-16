@@ -5,9 +5,9 @@ const BarLayout = ({ children }) => {
   const { user } = useUserStore();
 
   return (
-    <div className="">
+    <div className="flex flex-col">
       <Navbar />
-      <div className="flex-1 min-h-[calc(var(--window-inner-height)_-_65px)]">
+      <div className="flex-1 h-fit min-h-[calc(var(--window-inner-height)_-_65px)]">
         {/* <CustomScrollbars> */}
         <div className="flex container mx-auto">
           {/* <Sidebar /> */}

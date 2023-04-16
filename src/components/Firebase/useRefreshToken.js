@@ -37,7 +37,7 @@ const useRefreshToken = (isRefresh) => {
       </div>
     </Modal>
   );
-  return [contextHolder.current];
+  return { contextHolder: contextHolder.current };
 };
 
 export default useRefreshToken;

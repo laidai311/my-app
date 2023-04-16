@@ -39,7 +39,7 @@ export const ToastProvider = (props) => {
             {toasts.map((it) => (
               <Toast
                 key={it.id}
-                color={it.type}
+                color={it.color}
                 onClose={() => onClose(it.id)}
                 timeout={TIMEOUT}
               >

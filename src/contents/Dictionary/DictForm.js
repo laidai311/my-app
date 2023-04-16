@@ -3,16 +3,24 @@ import { motion } from 'framer-motion';
 import Form from '@/components/Form';
 import useAddDict from './useAddDict';
 import useRefreshToken from '@/components/Firebase/useRefreshToken';
+import { useToast } from '@/components/Toast';
 
 const DictForm = () => {
   const { data, error, isLoading, onInsert } = useAddDict();
-  const [contextHolder] = useRefreshToken(error?.code === 'token-expired');
+  const { contextHolder } = useRefreshToken(error?.code === 'token-expired');
+  const toast = useToast();
 
   return (
     <div className="p-5">
       <Form
         onSubmit={(_, value) => {
-          if (!value.word) return;
+          if (!value.word) {
+            toast.open({
+              content: 'Please fill in the word!',
+              color: 'warning',
+            });
+            return;
+          }
           onInsert(value);
         }}
         className="flex flex-col space-y-5"
@@ -37,16 +45,23 @@ const DictForm = () => {
           >
             {data?.data?.map((it) => (
               <div key={it?.id}>
-                <div>{`Word: ${it?.word || ''}`}</div>
-                <div>{`Translate: ${it?.translate || ''}`}</div>
+                <div>{`Word: ${it?.word || '_'}`}</div>
+                <div>{`Translate: ${it?.translate || '_'}`}</div>
                 <Button>Edit</Button>
               </div>
             ))}
           </motion.div>
         )}
-        <Button color="primary" type="submit" loading={isLoading}>
-          Add
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            color="primary"
+            type="submit"
+            loading={isLoading}
+            className="w-full lg:w-auto"
+          >
+            Add
+          </Button>
+        </div>
       </Form>
       {contextHolder}
     </div>

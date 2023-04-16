@@ -21,7 +21,7 @@ export const Toast = ({ onClose, timeout, color = 'success', children }) => {
       } ${color === 'error' ? 'bg-red-600 text-white' : ''} `}
       ref={ref}
     >
-      <div className="grow">{children}</div>
+      <div className="grow pl-2">{children}</div>
       <button
         onClick={onClose}
         className="shrink-0 h-8 w-8 p-2 rounded-md hover:bg-black/10 flex items-center justify-center"

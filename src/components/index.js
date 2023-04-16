@@ -1,21 +1,24 @@
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import React from 'react';
+
+// const Wrapper = ({component}) => component ? <
 
 export const Button = ({
   children,
   loading,
   className,
   color = 'default',
+  isLink,
   ...restProps
 }) => {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.9 }}
-      disabled={!!loading}
-      type="button"
-      {...restProps}
-      className={`w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:w-auto sm:text-sm ${
+  return React.cloneElement(
+    isLink ? <Link /> : <button />,
+    {
+      disabled: !!loading,
+      className: `inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm active:scale-90 transition-all ${
         color === 'error'
           ? 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 border-transparent'
           : ''
@@ -27,14 +30,14 @@ export const Button = ({
         color === 'default'
           ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-indigo-500'
           : ''
-      } ${className || ''}`}
-    >
-      {loading ? (
-        <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />
-      ) : (
-        children || ''
-      )}
-    </motion.button>
+      } ${className || ''}`,
+      ...restProps,
+    },
+    loading ? (
+      <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />
+    ) : (
+      children || ''
+    )
   );
 };
 

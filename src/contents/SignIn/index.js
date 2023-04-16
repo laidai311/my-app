@@ -75,7 +75,7 @@ const SignInApp = (props) => {
       {isReady ? (
         <div className="bg-primary-focus">
           <div className="container mx-auto">
-            <div className="flex justify-center items-center min-h-[var(--window-inner-height)]">
+            <div className="flex justify-center items-center min-h-[var(--window-height)]">
               <motion.div
                 initial={{
                   opacity: 0,
@@ -93,7 +93,7 @@ const SignInApp = (props) => {
                   delay: 0.2,
                   ease: [0, 0.71, 0.2, 1.01],
                 }}
-                className="w-full max-w-lg min-h-[var(--window-inner-height)] md:min-h-fit md:shadow-lg md:!rounded-xl bg-white"
+                className="w-full max-w-lg min-h-[var(--window-height)] md:min-h-fit md:shadow-lg md:!rounded-xl bg-white"
               >
                 <div className="artboard artboard-horizontal px-6 md:px-12 py-8 space-y-6">
                   <h1 className="text-5xl font-bold flex items-center space-x-3 select-none mt-3">

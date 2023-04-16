@@ -18,7 +18,9 @@ export default function HomePage() {
         <Modal open={open} onClose={toggle}>
           <div className="w-20 h-20 bg-white rounded-md">abc</div>
         </Modal>
-        <Button onClick={() => router.push('/dictionary')}>Dictionary</Button>
+        <Button isLink href="/dictionary">
+          Dictionary
+        </Button>
       </main>
     </>
   );
