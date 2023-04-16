@@ -3,10 +3,11 @@ import { styled } from '@stitches/react';
 const TableHeaderCell = styled('th', {
   backgroundColor: '#f1f1f1',
   padding: 12,
-  fontWeight: 500,
+  fontWeight: 600,
   textAlign: 'left',
   fontSize: 14,
-  color: '#2c3e50',
+  textTransform: 'uppercase',
+  color: 'MarkText',
   '&:first-child': {
     borderTopLeftRadius: 6,
   },

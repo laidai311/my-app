@@ -24,8 +24,9 @@ const DictForm = () => {
             return;
           }
           const isSuc = await onInsert(value);
-          console.log(isSuc);
-          e.target.reset();
+          if (isSuc) {
+            e.target.reset();
+          }
         }}
         className="flex flex-col space-y-5"
       >

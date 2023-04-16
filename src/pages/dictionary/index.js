@@ -10,7 +10,6 @@ const DictionaryPage = () => {
         <title>Dictionary | DaiLai 9966</title>
       </Head>
       <div className="my-5">
-        <BackPageButton />
         <DictionaryApp />
       </div>
     </>

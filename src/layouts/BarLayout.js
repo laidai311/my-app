@@ -1,19 +1,14 @@
-import { useUserStore } from '@/libs/store';
 import Navbar from './Navbar';
 
 const BarLayout = ({ children }) => {
-  const { user } = useUserStore();
-
   return (
-    <div className="flex flex-col">
+    <div className="">
       <Navbar />
-      <div className="flex-1 h-fit min-h-[calc(var(--window-inner-height)_-_65px)]">
+      <div className="min-h-[calc(var(--window-height)_-_65px)] h-auto">
         {/* <CustomScrollbars> */}
-        <div className="flex container mx-auto">
+        <div className="container mx-auto">
           {/* <Sidebar /> */}
-          <div className="flex-1">
-            <div className="">{children}</div>
-          </div>
+          <div className="">{children}</div>
         </div>
         {/* </CustomScrollbars> */}
       </div>

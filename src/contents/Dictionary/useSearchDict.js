@@ -12,10 +12,17 @@ const useSearchDict = () => {
   const onSearch = useCallback((val) => {
     mutate(val, {
       onSuccess: (suc) => {
-        toast.open({
-          content: `${suc?.message || 'Thành công'}`,
-          color: 'success',
-        });
+        if (suc?.status) {
+          toast.open({
+            content: `${suc?.message || 'Thành công'}`,
+            color: 'success',
+          });
+        } else {
+          toast.open({
+            content: `${suc?.message || 'Không có dữ liệu'}`,
+            color: 'info',
+          });
+        }
       },
       onError: (err) => {
         toast.open({

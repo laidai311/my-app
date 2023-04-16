@@ -1,4 +1,5 @@
 import { Button } from '@/components';
+import Drawer from '@/components/Drawer';
 import { useAuth } from '@/components/Firebase';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,6 +10,7 @@ const Sidebar = (props) => {
 
   return (
     <div className="border-b">
+      <Drawer />
       <div className="container mx-auto">
         <div className="flex space-x-3 p-2">
           <div className="">

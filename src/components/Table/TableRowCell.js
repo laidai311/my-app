@@ -4,7 +4,7 @@ import { get } from 'lodash';
 const TableCell = styled('td', {
   padding: 12,
   fontSize: 14,
-  color: 'grey',
+  color: 'GrayText',
 });
 
 export function TableRowCell({ item, column }) {

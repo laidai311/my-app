@@ -14,13 +14,15 @@ export default function HomePage() {
         <title>DaiLai 9966</title>
       </Head>
       <div className="my-5">
-        <Button onClick={toggle}>Open</Button>
-        <Modal open={open} onClose={toggle}>
-          <div className="w-20 h-20 bg-white rounded-md">abc</div>
-        </Modal>
-        <Button isLink href="/dictionary">
-          Dictionary
-        </Button>
+        <div className='mx-3 space-x-3'>
+          <Button onClick={toggle}>Open</Button>
+          <Modal open={open} onClose={toggle}>
+            <div className="w-20 h-20 bg-white rounded-md">abc</div>
+          </Modal>
+          <Button isLink href="/dictionary">
+            Dictionary
+          </Button>
+        </div>
       </div>
     </>
   );

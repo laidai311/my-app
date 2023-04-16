@@ -16,14 +16,7 @@ const handler = async (req, res) => {
       .limit(+limit)
       .get();
 
-    if (snapshot.empty) {
-      res.status(204).json({
-        data: [],
-        status: false,
-        code: 'no-data',
-        message: 'No data found!',
-      });
-    } else {
+    if (snapshot.size) {
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -34,6 +27,13 @@ const handler = async (req, res) => {
         status: true,
         code: 'success',
         message: 'Get data successfully!',
+      });
+    } else {
+      res.status(200).json({
+        data: [],
+        status: false,
+        code: 'no-data',
+        message: 'No data found!',
       });
     }
   } catch (error) {
