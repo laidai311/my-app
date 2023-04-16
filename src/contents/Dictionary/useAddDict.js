@@ -5,19 +5,20 @@ import dictionaryApi from '@/libs/api/dictionary';
 
 const useAddDict = () => {
   const toast = useToast();
-  const { data, isLoading, error, mutate } = useMutation({
+  const { data, isLoading, error, mutateAsync } = useMutation({
     mutationFn: (data) => dictionaryApi.insert(data),
   });
 
-  const onInsert = useCallback((val) => {
-    mutate(val, {
+  const onInsert = useCallback(async (val) => {
+    let result = false;
+    await mutateAsync(val, {
       onSuccess: (suc) => {
         if (suc?.status) {
           toast.open({
             content: `${suc?.message || 'Thành công'}`,
             color: 'success',
           });
-          e.target.reset();
+          result = true;
         } else {
           toast.open({
             content: `${suc?.message || 'Đã tồn tại'}`,
@@ -32,6 +33,7 @@ const useAddDict = () => {
         });
       },
     });
+    return result;
   }, []);
 
   return { data, error, isLoading, onInsert };

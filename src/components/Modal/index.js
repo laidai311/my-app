@@ -130,7 +130,7 @@ const Modal = ({ children, open, onClose }) => {
     <AnimatePresence initial={false}>
       {open ? (
         <ReactPortal className="w-screen h-screen fixed inset-0">
-          <Backdrop onClick={onClose}>
+          <Backdrop onClick={_onClose}>
             <motion.div
               variants={fade}
               initial="hidden"

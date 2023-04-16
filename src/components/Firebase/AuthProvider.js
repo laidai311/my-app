@@ -95,6 +95,7 @@ export const AuthProvider = (props) => {
 
   const clearAuth = () => {
     dispatch({ type: 'AUTH_CLEAR' });
+    setAccessToken('');
   };
 
   const signOutApp = () => {

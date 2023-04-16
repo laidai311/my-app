@@ -8,10 +8,10 @@ const TableHeaderCell = styled('th', {
   fontSize: 14,
   color: '#2c3e50',
   '&:first-child': {
-    borderTopLeftRadius: 12,
+    borderTopLeftRadius: 6,
   },
   '&:last-child': {
-    borderTopRightRadius: 12,
+    borderTopRightRadius: 6,
   },
 });
 

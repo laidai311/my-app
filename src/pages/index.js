@@ -13,7 +13,7 @@ export default function HomePage() {
       <Head>
         <title>DaiLai 9966</title>
       </Head>
-      <main>
+      <div className="my-5">
         <Button onClick={toggle}>Open</Button>
         <Modal open={open} onClose={toggle}>
           <div className="w-20 h-20 bg-white rounded-md">abc</div>
@@ -21,7 +21,7 @@ export default function HomePage() {
         <Button isLink href="/dictionary">
           Dictionary
         </Button>
-      </main>
+      </div>
     </>
   );
 }

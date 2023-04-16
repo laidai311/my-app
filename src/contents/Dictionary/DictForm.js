@@ -4,16 +4,18 @@ import Form from '@/components/Form';
 import useAddDict from './useAddDict';
 import useRefreshToken from '@/components/Firebase/useRefreshToken';
 import { useToast } from '@/components/Toast';
+import { useToggle } from 'ahooks';
 
 const DictForm = () => {
   const { data, error, isLoading, onInsert } = useAddDict();
   const { contextHolder } = useRefreshToken(error?.code === 'token-expired');
   const toast = useToast();
+  const [open, { toggle }] = useToggle();
 
   return (
     <div className="p-5">
       <Form
-        onSubmit={(_, value) => {
+        onSubmit={async (e, value) => {
           if (!value.word) {
             toast.open({
               content: 'Please fill in the word!',
@@ -21,7 +23,9 @@ const DictForm = () => {
             });
             return;
           }
-          onInsert(value);
+          const isSuc = await onInsert(value);
+          console.log(isSuc);
+          e.target.reset();
         }}
         className="flex flex-col space-y-5"
       >
@@ -30,12 +34,14 @@ const DictForm = () => {
           name="word"
           placeholder="Word"
           disabled={isLoading}
+          autoCapitalize="none"
         />
         <Input
           type="text"
           name="translate"
           placeholder="Translate"
           disabled={isLoading}
+          autoCapitalize="none"
         />
         {data?.code === 'exist' && (
           <motion.div
@@ -47,7 +53,9 @@ const DictForm = () => {
               <div key={it?.id}>
                 <div>{`Word: ${it?.word || '_'}`}</div>
                 <div>{`Translate: ${it?.translate || '_'}`}</div>
-                <Button>Edit</Button>
+                <Button type="button" onClick={toggle}>
+                  Edit
+                </Button>
               </div>
             ))}
           </motion.div>
@@ -59,7 +67,7 @@ const DictForm = () => {
             loading={isLoading}
             className="w-full lg:w-auto"
           >
-            Add
+            Create
           </Button>
         </div>
       </Form>

@@ -1,3 +1,4 @@
+import BackPageButton from '@/components/BackPageButton';
 import DictForm from '@/contents/Dictionary/DictForm';
 import BarLayout from '@/layouts/BarLayout';
 import Head from 'next/head';
@@ -8,7 +9,8 @@ const AddDictionaryPage = () => {
       <Head>
         <title>Add Dictionary | Dailai9966</title>
       </Head>
-      <div>
+      <div className="my-5">
+        <BackPageButton />
         <DictForm />
       </div>
     </>

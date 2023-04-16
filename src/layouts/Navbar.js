@@ -21,7 +21,14 @@ const Sidebar = (props) => {
                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
-                  <a>Homepage</a>
+                  <Button
+                    isLink
+                    href="/"
+                    color="text"
+                    className="!justify-start"
+                  >
+                    Homepage
+                  </Button>
                 </li>
                 <li>
                   <a>Portfolio</a>
@@ -67,14 +74,14 @@ const Sidebar = (props) => {
                     <a>Settings</a>
                   </li>
                   <li>
-                    <a
-                      className={`btn btn-ghost justify-start normal-case ${
-                        isLoading ? 'loading' : ''
-                      }`}
+                    <Button
+                      loading={isLoading}
                       onClick={signOutApp}
+                      color="text"
+                      className="!justify-start"
                     >
                       Logout
-                    </a>
+                    </Button>
                   </li>
                 </ul>
               </div>

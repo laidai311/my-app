@@ -11,4 +11,24 @@ export default {
       throw error;
     }
   },
+  search: async (args = {}) => {
+    try {
+      const res = await client.post('/api/dictionary/search', {
+        ...args,
+      });
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  update: async (args = {}) => {
+    try {
+      const res = await client.post('/api/dictionary/update', {
+        ...args,
+      });
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

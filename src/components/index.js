@@ -4,23 +4,22 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import React from 'react';
 
-// const Wrapper = ({component}) => component ? <
-
 export const Button = ({
   children,
   loading,
   className,
   color = 'default',
   isLink,
+  shape = 'round',
   ...restProps
 }) => {
   return React.cloneElement(
     isLink ? <Link /> : <button />,
     {
       disabled: !!loading,
-      className: `inline-flex justify-center rounded-md border shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm active:scale-90 transition-all ${
+      className: `h-10 inline-flex justify-center items-center space-x-1.5 border shadow-sm text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm active:scale-90 transition-all select-none ${
         color === 'error'
-          ? 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 border-transparent'
+          ? 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 border-transparent disabled:bg-red-6/90'
           : ''
       } ${
         color === 'primary'
@@ -30,11 +29,17 @@ export const Button = ({
         color === 'default'
           ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-indigo-500'
           : ''
+      } ${
+        color === 'text'
+          ? 'border-transparent shadow-none bg-white text-gray-700 hover:bg-gray-100 focus:ring-indigo-500'
+          : ''
+      } ${shape === 'circle' ? 'rounded-full w-10' : ''} ${
+        shape === 'round' ? 'rounded-md px-4 py-2' : ''
       } ${className || ''}`,
       ...restProps,
     },
     loading ? (
-      <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" />
+      <FontAwesomeIcon icon={faCircleNotch} className="animate-spin h-5 w-5" />
     ) : (
       children || ''
     )

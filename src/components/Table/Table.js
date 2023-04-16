@@ -6,6 +6,7 @@ import { TableRow } from './TableRow';
 const TableWrapper = styled('table', {
   borderCollapse: 'collapse',
   border: 'none',
+  width: '100%',
 });
 
 export function Table({ data, columns }) {
