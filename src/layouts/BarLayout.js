@@ -2,17 +2,17 @@ import Navbar from './Navbar';
 
 const BarLayout = ({ children }) => {
   return (
-    <div className="">
+    <>
       <Navbar />
       <div className="min-h-[calc(var(--window-height)_-_65px)] h-auto">
         {/* <CustomScrollbars> */}
-        <div className="container mx-auto">
+        <div className="container mx-auto my-5">
           {/* <Sidebar /> */}
-          <div className="">{children}</div>
+          {children}
         </div>
         {/* </CustomScrollbars> */}
       </div>
-    </div>
+    </>
   );
 };
 

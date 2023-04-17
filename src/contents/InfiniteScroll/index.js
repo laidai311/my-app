@@ -1,18 +1,17 @@
-import InfiniteScroll from "react-infinite-scroll-component"
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { Loading } from "./Loading"
-import { Card } from "./Card"
+import { Loading } from './Loading';
+import { Card } from './Card';
 
 import { useCharacter } from './useCharacter';
 
-
 const InfiniteScrollApp = () => {
-  const { characters, error, fetchNextPage, hasNextPage, status } = useCharacter()
+  const { characters, error, fetchNextPage, hasNextPage, status } =
+    useCharacter();
 
-  if (status === 'loading') return <Loading />
+  if (status === 'loading') return <Loading />;
 
-  if (status === 'error') return <h4>Ups!, {`${error}`}</h4>
-
+  if (status === 'error') return <h4>Ups!, {`${error}`}</h4>;
 
   return (
     <div>
@@ -25,14 +24,13 @@ const InfiniteScrollApp = () => {
         loader={<Loading />}
       >
         <div className="grid-container">
-          {
-            characters && characters.results.map(character => (
+          {characters &&
+            characters.results.map((character) => (
               <Card key={character.id} character={character} />
-            ))
-          }
+            ))}
         </div>
       </InfiniteScroll>
     </div>
-  )
-}
-export default InfiniteScrollApp
+  );
+};
+export default InfiniteScrollApp;

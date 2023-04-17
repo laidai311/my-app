@@ -9,9 +9,7 @@ const AddDictionaryPage = () => {
       <Head>
         <title>Add Dictionary | Dailai9966</title>
       </Head>
-      <div className="my-5">
-        <DictForm />
-      </div>
+      <DictForm />
     </>
   );
 };

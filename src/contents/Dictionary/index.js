@@ -1,7 +1,11 @@
 import { Button, Input } from '@/components';
 import Form from '@/components/Form';
 import { Table } from '@/components/Table';
-import { faCircleNotch, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircleNotch,
+  faMagnifyingGlass,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { styled } from '@stitches/react';
 import useSearchDict from './useSearchDict';
@@ -73,19 +77,20 @@ const DictionaryApp = () => {
             if (!val.search) return;
             onSearch(val);
           }}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto flex"
         >
-          {/* <Input 
-            name="search"
-            label="Enter search"
-            autoCapitalize="none"
-          /> */}
           <input
             name="search"
             placeholder="Enter search"
             autoCapitalize="none"
-            className="appearance-none outline-none focus:outline-none bg-gray-100 h-11 rounded-md px-4 w-full"
+            className="appearance-none outline-none focus:outline-none bg-gray-100 h-11 rounded-l-md px-4 w-full"
           />
+          <button
+            type="submit"
+            className="h-11 px-4 rounded-r-md bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            <FontAwesomeIcon icon={faMagnifyingGlass} className="text-white" />
+          </button>
         </Form>
       </div>
       {isLoading && (
@@ -96,7 +101,7 @@ const DictionaryApp = () => {
           />
         </div>
       )}
-      <div className='mx-0 sm:mx-3 w-full'>
+      <div className="mx-0 sm:mx-3 w-full">
         <Table data={data?.data || []} columns={columns} />
       </div>
     </div>

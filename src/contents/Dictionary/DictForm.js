@@ -5,16 +5,21 @@ import useAddDict from './useAddDict';
 import useRefreshToken from '@/components/Firebase/useRefreshToken';
 import { useToast } from '@/components/Toast';
 import { useToggle } from 'ahooks';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
+import { useRef } from 'react';
 
 const DictForm = () => {
   const { data, error, isLoading, onInsert } = useAddDict();
   const { contextHolder } = useRefreshToken(error?.code === 'token-expired');
   const toast = useToast();
   const [open, { toggle }] = useToggle();
+  const formRef = useRef();
 
   return (
     <div className="p-5">
       <Form
+        ref={formRef}
         onSubmit={async (e, value) => {
           if (!value.word) {
             toast.open({
@@ -62,14 +67,27 @@ const DictForm = () => {
           </motion.div>
         )}
         <div className="flex justify-end">
-          <Button
-            color="primary"
-            type="submit"
-            loading={isLoading}
-            className="w-full lg:w-auto"
-          >
-            Create
-          </Button>
+          <div className="w-full lg:w-auto lg:space-x-3 space-y-3 lg:space-y-0">
+            <Button
+              color="default"
+              type="button"
+              disabled={isLoading}
+              className="w-full lg:w-auto flex items-center space-x-2"
+              onClick={() => formRef.current.reset()}
+            >
+              <FontAwesomeIcon icon={faRotate} />
+              <span>Reset</span>
+            </Button>
+            <Button
+              color="primary"
+              type="submit"
+              loading={isLoading}
+              className="w-full lg:w-auto flex items-center space-x-2"
+            >
+              <FontAwesomeIcon icon={faCloudArrowUp} />
+              <span>Create</span>
+            </Button>
+          </div>
         </div>
       </Form>
       {contextHolder}

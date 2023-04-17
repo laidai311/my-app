@@ -17,7 +17,7 @@ export const Button = ({
     isLink ? <Link /> : <button />,
     {
       disabled: !!loading,
-      className: `h-10 inline-flex justify-center items-center space-x-1.5 border shadow-sm text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm active:scale-90 transition-all select-none ${
+      className: `h-10 inline-flex justify-center items-center space-x-1.5 border shadow-sm text-base font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm active:scale-90 transition-all select-none ${
         color === 'error'
           ? 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 border-transparent disabled:bg-red-6/90'
           : ''

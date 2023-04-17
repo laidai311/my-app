@@ -9,9 +9,7 @@ const DictionaryPage = () => {
       <Head>
         <title>Dictionary | DaiLai 9966</title>
       </Head>
-      <div className="my-5">
-        <DictionaryApp />
-      </div>
+      <DictionaryApp />
     </>
   );
 };
