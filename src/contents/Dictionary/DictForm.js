@@ -8,6 +8,7 @@ import { useToggle } from 'ahooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
+import { partOfSpeechOptions } from '@/libs/utils';
 
 const DictForm = () => {
   const { data, error, isLoading, onInsert } = useAddDict();
@@ -42,6 +43,15 @@ const DictForm = () => {
           disabled={isLoading}
           autoCapitalize="none"
         />
+        <select
+          name="part_of_speech"
+          placeholder="Part of speech"
+          className="bg-gray-100 h-12 rounded-md px-2 outline-none focus:outline-none appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          {partOfSpeechOptions.map((item) => (
+            <option value={item.value}>{item.label}</option>
+          ))}
+        </select>
         <Input
           type="text"
           name="translate"

@@ -206,3 +206,22 @@ export const hasScrollBar = (element) => {
   root.scrollTop = scrollTop;
   return true;
 };
+
+export const partOfSpeechOptions = [
+  { id: 1, value: 'idiom', label: 'Idiom', color: 'red' },
+  { id: 2, value: 'noun', label: 'Noun', color: 'orange' },
+  { id: 3, value: 'pronoun', label: 'Pronoun', color: 'yellow' },
+  { id: 4, value: 'adjective', label: 'Adjective', color: 'green' },
+  { id: 5, value: 'verb', label: 'Verb', color: 'teal' },
+  { id: 6, value: 'adverb', label: 'Adverb', color: 'blue' },
+  { id: 7, value: 'determiner', label: 'Determiner', color: 'cyan' },
+  { id: 8, value: 'preposition', label: 'Preposition', color: 'purple' },
+  { id: 9, value: 'conjunction', label: 'Conjunction', color: 'pink' },
+  { id: 10, value: 'interjection', label: 'Interjection', color: 'gray' },
+];
+
+export const getPartOfSpeech = (val) => {
+  const result = partOfSpeechOptions.find((item) => item.value === val);
+
+  return result;
+};

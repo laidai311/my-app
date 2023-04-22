@@ -124,12 +124,12 @@ const Modal = ({ children, open, onClose }) => {
     }
   }, []);
   useEventListener('keydown', (e) => (e.key === 'Escape' ? _onClose() : null));
-  useBodyScroll(open);
+  // useBodyScroll(open);
 
   return (
     <AnimatePresence initial={false}>
       {open ? (
-        <ReactPortal className="w-screen h-screen fixed inset-0">
+        <ReactPortal className="w-screen h-[var(--window-height)] fixed inset-0">
           <Backdrop onClick={_onClose}>
             <motion.div
               variants={fade}
@@ -138,7 +138,7 @@ const Modal = ({ children, open, onClose }) => {
               exit="exit"
               role="dialog"
               aria-modal="true"
-              className="h-fit w-fit"
+              className="h-full"
               onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
             >
               {children || null}

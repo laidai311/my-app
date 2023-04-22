@@ -6,7 +6,7 @@ import { Card } from './Card';
 import { useCharacter } from './useCharacter';
 
 const InfiniteScrollApp = () => {
-  const { characters, error, fetchNextPage, hasNextPage, status } =
+  const { characters, error, fetchNextPage, hasNextPage, status, refetch } =
     useCharacter();
 
   if (status === 'loading') return <Loading />;
@@ -16,7 +16,9 @@ const InfiniteScrollApp = () => {
   return (
     <div>
       <h1 className="title">React Infinite Scroll</h1>
-
+      {/* <button onClick={() => {
+                refetch({ refetchPage: (page, index) => index === 0 })
+            }}>click</button> */}
       <InfiniteScroll
         dataLength={characters ? characters.results.length : 0}
         next={() => fetchNextPage()}
