@@ -1,26 +1,21 @@
-import { styled } from '@stitches/react';
-
+import { isEmpty } from 'lodash';
 import { TableHeader } from './TableHeader';
 import { TableRow } from './TableRow';
 
-const TableWrapper = styled('table', {
-  borderCollapse: 'collapse',
-  border: 'none',
-  minWidth: '400px',
-  width: '100%',
-});
+export function Table({ columns, className, ...restProps }) {
+    if (!Array.isArray(columns) && isEmpty(columns)) return null;
 
-export function Table({ data, columns }) {
-  return (
-    <div className="overflow-auto w-full">
-      <TableWrapper>
-        <thead>
-          <TableHeader columns={columns} />
-        </thead>
-        <tbody>
-          <TableRow data={data} columns={columns} />
-        </tbody>
-      </TableWrapper>
-    </div>
-  );
+    return (
+        <div className={`overflow-x-auto w-full ${className || ''}`}>
+            <table className="border-collapse border-none min-w-0 w-full">
+                <thead>
+                    <TableHeader columns={columns} />
+                </thead>
+
+                <tbody>
+                    <TableRow columns={columns} {...restProps} />
+                </tbody>
+            </table>
+        </div>
+    );
 }

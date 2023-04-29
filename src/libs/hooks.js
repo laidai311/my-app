@@ -1,7 +1,12 @@
 import { createCSSVariable } from './utils';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useClickAway, useDebounceFn, useEventListener } from 'ahooks';
+import {
+  useClickAway,
+  useDebounceFn,
+  useEventListener,
+  useToggle,
+} from 'ahooks';
 import { useLayoutEffect } from 'react';
 import { has } from 'lodash';
 
@@ -222,4 +227,78 @@ export const useLockBodyScroll = (isLocked) => {
 
     return () => enableBodyScroll();
   }, [isLocked]);
+};
+
+export const useUpdateEffect = (callback, dependencies = []) => {
+  const firstRenderRef = useRef(true);
+
+  useEffect(() => {
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false;
+      return;
+    }
+    return callback();
+  }, [...dependencies]);
+};
+
+export function useWindowSize() {
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEventListener('resize', () => {
+    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+  });
+
+  return windowSize;
+}
+
+export function useArray(defaultValue) {
+  const [array, setArray] = useState(defaultValue);
+
+  function push(element) {
+    setArray((a) => [...a, element]);
+  }
+
+  function filter(callback) {
+    setArray((a) => a.filter(callback));
+  }
+
+  function update(index, newElement) {
+    setArray((a) => [
+      ...a.slice(0, index),
+      newElement,
+      ...a.slice(index + 1, a.length),
+    ]);
+  }
+
+  function remove(index) {
+    setArray((a) => [...a.slice(0, index), ...a.slice(index + 1, a.length)]);
+  }
+
+  function clear() {
+    setArray([]);
+  }
+
+  return { array, set: setArray, push, filter, update, remove, clear };
+}
+
+export const useToggleWithHistory = (defaultValue = false) => {
+  const [open, actions] = useToggle(defaultValue);
+
+  const push = useCallback((url, options = { scroll: true }) => {
+    window.history.scrollRestoration = options?.scroll ? 'manual' : 'auto';
+    window.history.pushState(null, '', url);
+    actions.set(true);
+  }, []);
+
+  const back = useCallback(() => {
+    window.history.back();
+    actions.set(false);
+  }, []);
+
+  useEventListener('popstate', () => actions.set(false));
+
+  return [open, { push, back, ...actions }];
 };

@@ -44,7 +44,7 @@ const DictForm = () => {
           autoCapitalize="none"
         />
         <select
-          name="part_of_speech"
+          name="phonetic"
           placeholder="Part of speech"
           className="bg-gray-100 h-12 rounded-md px-2 outline-none focus:outline-none appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
@@ -52,6 +52,13 @@ const DictForm = () => {
             <option value={item.value}>{item.label}</option>
           ))}
         </select>
+        <Input
+          type="text"
+          name="definition"
+          placeholder="Definition"
+          disabled={isLoading}
+          autoCapitalize="none"
+        />
         <Input
           type="text"
           name="translate"
