@@ -1,4 +1,3 @@
-import { Empty, Skeleton } from 'antd';
 import { size } from 'lodash';
 import { TableRowCell } from './TableRowCell';
 
@@ -9,11 +8,11 @@ export function TableRow({ data, columns, error, fetching, rowHeight }) {
                 <td
                     style={{ zIndex: 0 }}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                    {error?.message && (
+                    {/* {error?.message && (
                         <Empty
                             description={error?.message || 'Không tìm thấy dữ liệu trên hệ thống!'}
                         />
-                    )}
+                    )} */}
                 </td>
             </tr>
         );
@@ -41,8 +40,8 @@ export function TableRow({ data, columns, error, fetching, rowHeight }) {
             {fetching ? (
                 <tr className="min-h-16">
                     <td className="space-y-5">
-                        <Skeleton active />
-                        <Skeleton active />
+                        {/* <Skeleton active />
+                        <Skeleton active /> */}
                     </td>
                 </tr>
             ) : null}
