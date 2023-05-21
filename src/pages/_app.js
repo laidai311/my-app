@@ -1,57 +1,98 @@
-import '@/styles/globals.css';
-import 'nprogress/nprogress.css';
-import { AnimatePresence } from 'framer-motion';
-import { AuthProvider } from '@/components/Firebase';
+import { useWindowHeight } from '@/libs/hooks';
+import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ToastProvider } from '@/components/Toast';
-import BaseLayout from '@/layouts/BaseLayout';
-import nProgress from 'nprogress';
+import Head from 'next/head';
+import React from 'react';
+import { Notifications } from '@mantine/notifications';
+import { AuthProvider } from '@/components/AuthFirebase';
 import RouteGuard from '@/components/RouteGuard';
-import Router from 'next/router';
+import { setCookie, getCookie } from 'cookies-next';
+import NextApp from 'next/app';
+import { RouterTransition } from '@/components/RouterTransition';
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      retry: 1,
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+            refetchOnMount: true,
+            refetchOnReconnect: true,
+            retry: 1,
+        },
     },
-  },
 });
 
-export default function App({ Component, pageProps }) {
-  const getLayout = Component.getLayout || ((page) => page);
+export default function App(props) {
+    const { Component, pageProps } = props;
+    const getLayout = Component.getLayout || ((page) => page);
 
-  nProgress.configure({
-    easing: 'ease',
-    speed: 500,
-    showSpinner: false,
-    template:
-      '<div class="bar !bg-[#FC2947]" role="bar"><div class="peg !bg-[#FE6244]"></div></div>',
-  });
-  Router.events.on('routeChangeStart', nProgress.start);
-  Router.events.on('routeChangeError', nProgress.done);
-  Router.events.on('routeChangeComplete', nProgress.done);
+    const [colorScheme, setColorScheme] = React.useState(props.colorScheme);
+    const [isReady, setIsReady] = React.useState();
 
-  return (
-    <AuthProvider>
-      <RouteGuard>
-        <AnimatePresence
-          mode="wait"
-          initial={true}
-          onExitComplete={() => {
-            if (typeof window === 'object') {
-              window.scrollTo({ top: 0 });
-            }
-          }}
-        >
-          <QueryClientProvider client={queryClient}>
-            <ToastProvider>
-              <BaseLayout>{getLayout(<Component {...pageProps} />)}</BaseLayout>
-            </ToastProvider>
-          </QueryClientProvider>
-        </AnimatePresence>
-      </RouteGuard>
-    </AuthProvider>
-  );
+    useWindowHeight();
+    React.useEffect(() => {
+        setIsReady(true);
+    }, []);
+
+    const toggleColorScheme = (value) => {
+        const nextColorScheme =
+            value || (colorScheme === 'dark' ? 'light' : 'dark');
+        setColorScheme(nextColorScheme);
+        setCookie('mantine-color-scheme', nextColorScheme, {
+            maxAge: 60 * 60 * 24 * 30,
+        });
+    };
+
+    return (
+        <>
+            <Head>
+                <title>DaiLai 9966</title>
+                <meta name="description" content="Dailai9966" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, maximum-scale=1"
+                />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+
+            <ColorSchemeProvider
+                colorScheme={colorScheme}
+                toggleColorScheme={toggleColorScheme}
+            >
+                <MantineProvider
+                    withGlobalStyles
+                    withNormalizeCSS
+                    theme={{
+                        primaryColor: 'teal',
+                        colorScheme,
+                    }}
+                >
+                    <ModalsProvider>
+                        <QueryClientProvider client={queryClient}>
+                            <AuthProvider>
+                                <RouteGuard>
+                                    {isReady
+                                        ? getLayout(
+                                              <Component {...pageProps} />
+                                          )
+                                        : null}
+                                    <RouterTransition />
+                                    <Notifications />
+                                </RouteGuard>
+                            </AuthProvider>
+                        </QueryClientProvider>
+                    </ModalsProvider>
+                </MantineProvider>
+            </ColorSchemeProvider>
+        </>
+    );
 }
+
+App.getInitialProps = async (appContext) => {
+    const appProps = await NextApp.getInitialProps(appContext);
+    return {
+        ...appProps,
+        colorScheme:
+            getCookie('mantine-color-scheme', appContext.ctx) || 'light',
+    };
+};

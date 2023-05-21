@@ -1,64 +1,70 @@
-import { Button, Input } from '@/components';
-import { useEventListener, useToggle } from 'ahooks';
-import BarLayout from '@/layouts/BarLayout';
 import Head from 'next/head';
-import Modal from '@/components/Modal';
-import { useRouter } from 'next/router';
-import InfiniteScrollApp from '@/contents/InfiniteScroll';
-// import MyModal from '@/components/Modal';
 import {
-  useLockBodyScroll,
-  useDetectKeyboardOpen,
-  useToggleWithHistory,
-} from '@/libs/hooks';
-import { useEffect, useRef, useState } from 'react';
-import Example from '@/contents/Ex';
-let lastKnownScrollPosition;
-let lastKnownScrollPosition2;
-export default function HomePage() {
-  const router = useRouter();
-  const [val, setVal] = useState();
-  const isKeyboardOpen = useDetectKeyboardOpen();
-  const [open, { push, back }] = useToggleWithHistory();
-  useLockBodyScroll(open);
+    Button,
+    Chip,
+    ColorInput,
+    ColorPicker,
+    Drawer,
+    Group,
+    Input,
+    Modal,
+    ScrollArea,
+    Select,
+} from '@mantine/core';
+import { IconAt } from '@tabler/icons-react';
+import React from 'react';
+import { useDisclosure } from '@mantine/hooks';
+import { HeaderMegaMenu } from '@/layouts/Headers';
+import { NavbarNested } from '@/layouts/Navbar';
+import { PasswordStrength } from '@/contents/SignIn/PasswordStrength';
+import SidebarLayout from '@/layouts/BaseLayout';
 
-  return (
-    <>
-      <Head>
-        <title>DaiLai 9966</title>
-      </Head>
-      <div className="my-5 bg-slate-300">
-        <div className="mx-3 space-x-3">
-          <div className="h-32"></div>
-          <Button
-            onClick={() => {
-              push('post/1');
-            }}
-          >
-            Open
-          </Button>
-          <Modal open={open} onClose={back}>
-            <div className=" h-[var(--window-height)] bg-white rounded-md overflow-y-auto">
-              abc {val?.x + '-' + val?.y}
-              <input />
-              <div style={{height: 1000}} className=" bg-slate-400">
-                {isKeyboardOpen ? 'show' : 'hide'}
-              </div>
-              <button onClick={back}>back</button>
-              <Input />
-            </div>
-          </Modal>
-          <Button isLink href="/dictionary" color="error">
-            Dictionary
-          </Button>
-        </div>
-        <Example />
-        <div className="h-96" style={{ height: 2000 }}></div>
-        {/* <MyModal /> */}
-        {/* <InfiniteScrollApp /> */}
-      </div>
-    </>
-  );
+export default function HomePage() {
+    const tempFn = React.useRef(undefined);
+    const [opened, { open, close }] = useDisclosure(false);
+
+    return (
+        <>
+            <Head>
+                <title>DaiLai 9966</title>
+            </Head>
+            <PasswordStrength />
+            <ColorPicker
+                format="hex"
+                swatches={[
+                    '#25262b',
+                    '#868e96',
+                    '#fa5252',
+                    '#e64980',
+                    '#be4bdb',
+                    '#7950f2',
+                    '#4c6ef5',
+                    '#228be6',
+                    '#15aabf',
+                    '#12b886',
+                    '#40c057',
+                    '#82c91e',
+                    '#fab005',
+                    '#fd7e14',
+                ]}
+            />
+            <Chip variant="filled" defaultChecked>
+                Awesome chip
+            </Chip>
+            <Button onClick={() => tempFn.current?.()}>Click me!</Button>
+            <Input icon={<IconAt />} placeholder="Your email" />
+            <Select
+                label="Your favorite framework/library"
+                placeholder="Pick one"
+                data={[
+                    { value: 'react', label: 'React' },
+                    { value: 'ng', label: 'Angular' },
+                    { value: 'svelte', label: 'Svelte' },
+                    { value: 'vue', label: 'Vue' },
+                ]}
+            />
+        </>
+    );
 }
 
-HomePage.getLayout = (page) => <BarLayout>{page}</BarLayout>;
+HomePage.getLayout = (page) => <SidebarLayout>{page}</SidebarLayout>;

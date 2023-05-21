@@ -1,34 +1,38 @@
 import { routes } from '@/configs/routes';
-import { useAuth } from './Firebase';
+import { useAuth } from './AuthFirebase';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import FullPageLoader from './FullPageLoader';
+import { LoadingOverlay } from '@mantine/core';
 
 const RouteGuard = ({ children }) => {
-  const { user, isLoading, status } = useAuth();
-  const [isReady, setIsReady] = useState();
-  const router = useRouter();
+    const { data: user, status } = useAuth();
+    const [isReady, setIsReady] = useState();
+    const router = useRouter();
 
-  useEffect(() => {
-    router.prefetch('/sign-in');
-  }, [router]);
+    useEffect(() => {
+        router.prefetch('/sign-in');
+    }, []);
 
-  const isPublicPath = useMemo(
-    () => routes.public.some((route) => router.asPath.startsWith(route)),
-    [router]
-  );
+    const isPublicPath = useMemo(
+        () => routes.public.some((route) => router.asPath.startsWith(route)),
+        [router]
+    );
 
-  useEffect(() => {
-    if (!(isLoading || isPublicPath || user || status === 'no-authenticated')) {
-      router.push('/sign-in');
-    } else {
-      if (!isLoading) {
-        setIsReady(true);
-      }
-    }
-  }, [isPublicPath, isLoading]);
+    useEffect(() => {
+        if (status === 'loading') return;
 
-  return isReady ? children : <FullPageLoader />;
+        if (isPublicPath || user) {
+            setIsReady(true);
+        } else {
+            router.push('/sign-in');
+        }
+    }, [isPublicPath, user, status]);
+
+    return isReady ? (
+        children
+    ) : (
+        <LoadingOverlay visible={true} overlayBlur={2} />
+    );
 };
 
 export default RouteGuard;

@@ -1,101 +1,116 @@
-import { Button } from '@/components';
-import Drawer from '@/components/Drawer';
-import { useAuth } from '@/components/Firebase';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Link from 'next/link';
+import { Navbar, Group, Code, ScrollArea, createStyles, rem } from '@mantine/core';
+import {
+  IconNotes,
+  IconCalendarStats,
+  IconGauge,
+  IconPresentationAnalytics,
+  IconFileAnalytics,
+  IconAdjustments,
+  IconLock,
+} from '@tabler/icons-react';
+import { UserButton } from './UserButton';
+import { LinksGroup } from './LinkGroup';
+// import { Logo } from './Logo';
 
-const Sidebar = (props) => {
-  const { user, isLoading, signOutApp } = useAuth();
+const mockdata = [
+  { label: 'Dashboard', icon: IconGauge },
+  {
+    label: 'Market news',
+    icon: IconNotes,
+    initiallyOpened: true,
+    links: [
+      { label: 'Overview', link: '/' },
+      { label: 'Forecasts', link: '/' },
+      { label: 'Outlook', link: '/' },
+      { label: 'Real time', link: '/' },
+    ],
+  },
+  {
+    label: 'Releases',
+    icon: IconCalendarStats,
+    links: [
+      { label: 'Upcoming releases', link: '/' },
+      { label: 'Previous releases', link: '/' },
+      { label: 'Releases schedule', link: '/' },
+    ],
+  },
+  { label: 'Analytics', icon: IconPresentationAnalytics },
+  { label: 'Contracts', icon: IconFileAnalytics },
+  { label: 'Settings', icon: IconAdjustments },
+  {
+    label: 'Security',
+    icon: IconLock,
+    links: [
+      { label: 'Enable 2FA', link: '/' },
+      { label: 'Change password', link: '/' },
+      { label: 'Recovery codes', link: '/' },
+    ],
+  },
+];
+
+const useStyles = createStyles((theme) => ({
+  navbar: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
+    paddingBottom: 0,
+  },
+
+  header: {
+    padding: theme.spacing.md,
+    paddingTop: 0,
+    marginLeft: `calc(${theme.spacing.md} * -1)`,
+    marginRight: `calc(${theme.spacing.md} * -1)`,
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+    borderBottom: `${rem(1)} solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
+    }`,
+  },
+
+  links: {
+    marginLeft: `calc(${theme.spacing.md} * -1)`,
+    marginRight: `calc(${theme.spacing.md} * -1)`,
+  },
+
+  linksInner: {
+    paddingTop: theme.spacing.xl,
+    paddingBottom: theme.spacing.xl,
+  },
+
+  footer: {
+    marginLeft: `calc(${theme.spacing.md} * -1)`,
+    marginRight: `calc(${theme.spacing.md} * -1)`,
+    borderTop: `${rem(1)} solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
+    }`,
+  },
+}));
+
+export function NavbarNested() {
+  const { classes } = useStyles();
+  const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
 
   return (
-    <div className="border-b">
-      <Drawer />
-      <div className="container mx-auto">
-        <div className="flex space-x-3 p-2">
-          <div className="">
-            <div className="dropdown">
-              <label tabIndex={0} className="btn btn-ghost btn-circle">
-                <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
-              </label>
-              <ul
-                tabIndex={0}
-                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                <li>
-                  <Button
-                    isLink
-                    href="/"
-                    color="text"
-                    className="!justify-start"
-                  >
-                    Homepage
-                  </Button>
-                </li>
-                <li>
-                  <a>Portfolio</a>
-                </li>
-                <li>
-                  <a>About</a>
-                </li>
-              </ul>
-            </div>
+    <Navbar height={800} width={{ sm: 300 }} p="md" className={classes.navbar}>
+      <Navbar.Section className={classes.header}>
+        <Group position="apart">
+          <div className=''>
+            {/* <Logo width={rem(120)} /> */}
+            logo
           </div>
-          <div className="grow">
-            <div className="form-control">
-              {/* <input
-                type="text"
-                placeholder="Search"
-                className="input input-bordered"
-              /> */}
-            </div>
-          </div>
-          <div className="">
-            {user ? (
-              <div className="dropdown dropdown-end">
-                <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                  <div className="avatar online placeholder">
-                    <div className="bg-neutral-focus text-neutral-content rounded-full w-10">
-                      <span className="text-xl uppercase">
-                        {user?.name?.[0] || user?.email?.[0]}
-                      </span>
-                    </div>
-                  </div>
-                </label>
-                <ul
-                  tabIndex={0}
-                  className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
-                >
-                  <li>
-                    <a className="justify-between">
-                      Profile
-                      <span className="badge">New</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a>Settings</a>
-                  </li>
-                  <li>
-                    <Button
-                      loading={isLoading}
-                      onClick={signOutApp}
-                      color="text"
-                      className="!justify-start"
-                    >
-                      Logout
-                    </Button>
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <Button color="primary" isLink href="/sign-in">
-                Sign in
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+          <Code sx={{ fontWeight: 700 }}>v3.1.2</Code>
+        </Group>
+      </Navbar.Section>
+
+      <Navbar.Section grow className={classes.links} component={ScrollArea}>
+        <div className={classes.linksInner}>{links}</div>
+      </Navbar.Section>
+
+      <Navbar.Section className={classes.footer}>
+        <UserButton
+          image="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
+          name="Ann Nullpointer"
+          email="anullpointer@yahoo.com"
+        />
+      </Navbar.Section>
+    </Navbar>
   );
-};
-export default Sidebar;
+}
