@@ -90,6 +90,12 @@ export default function BaseLayout({ children }) {
                                 icon={<IconSearch size={13} />}
                                 radius="md"
                                 placeholder="Search"
+                                type="search"
+                                role="combobox"
+                                aria-controls="matches"
+                                spellCheck={false}
+                                autoCapitalize="off"
+                                autoComplete="off"
                                 rightSection={<Kbd size="xs">/</Kbd>}
                             />
                         </Group>
@@ -155,7 +161,7 @@ export default function BaseLayout({ children }) {
                     </ScrollArea>
                 </Navbar>
 
-                <Box component="main" p={{ sm: 'md' }}>
+                <Box component="main">
                     {children}
                 </Box>
             </Box>

@@ -12,7 +12,6 @@ import {
     Anchor,
     Stack,
     Center,
-    useNo,
     Progress,
 } from '@mantine/core';
 import NextLink from 'next/link';

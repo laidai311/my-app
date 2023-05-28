@@ -1,7 +1,7 @@
 import { useToast } from '@/components/Toast';
 import { useMutation } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import dictionaryApi from '@/libs/api/dictionary';
+import dictionaryApi from '@/libs/api/words';
 
 const useAddDict = () => {
   const toast = useToast();

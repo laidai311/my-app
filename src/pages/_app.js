@@ -55,20 +55,20 @@ export default function App(props) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <ColorSchemeProvider
-                colorScheme={colorScheme}
-                toggleColorScheme={toggleColorScheme}
-            >
-                <MantineProvider
-                    withGlobalStyles
-                    withNormalizeCSS
-                    theme={{
-                        primaryColor: 'teal',
-                        colorScheme,
-                    }}
+            <QueryClientProvider client={queryClient}>
+                <ColorSchemeProvider
+                    colorScheme={colorScheme}
+                    toggleColorScheme={toggleColorScheme}
                 >
-                    <ModalsProvider>
-                        <QueryClientProvider client={queryClient}>
+                    <MantineProvider
+                        withGlobalStyles
+                        withNormalizeCSS
+                        theme={{
+                            primaryColor: 'teal',
+                            colorScheme,
+                        }}
+                    >
+                        <ModalsProvider>
                             <AuthProvider>
                                 <RouteGuard>
                                     {isReady
@@ -76,14 +76,14 @@ export default function App(props) {
                                               <Component {...pageProps} />
                                           )
                                         : null}
-                                    <RouterTransition />
-                                    <Notifications />
                                 </RouteGuard>
                             </AuthProvider>
-                        </QueryClientProvider>
-                    </ModalsProvider>
-                </MantineProvider>
-            </ColorSchemeProvider>
+                            <RouterTransition />
+                            <Notifications style={{ zIndex: 1010 }} />
+                        </ModalsProvider>
+                    </MantineProvider>
+                </ColorSchemeProvider>
+            </QueryClientProvider>
         </>
     );
 }

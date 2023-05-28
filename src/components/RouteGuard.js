@@ -13,20 +13,20 @@ const RouteGuard = ({ children }) => {
         router.prefetch('/sign-in');
     }, []);
 
-    const isPublicPath = useMemo(
-        () => routes.public.some((route) => router.asPath.startsWith(route)),
+    const isPrivatePath = useMemo(
+        () => routes.private.some((route) => router.asPath.startsWith(route)),
         [router]
     );
 
     useEffect(() => {
         if (status === 'loading') return;
 
-        if (isPublicPath || user) {
+        if (!isPrivatePath || user) {
             setIsReady(true);
         } else {
             router.push('/sign-in');
         }
-    }, [isPublicPath, user, status]);
+    }, [isPrivatePath, user, status]);
 
     return isReady ? (
         children
