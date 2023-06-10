@@ -20,6 +20,7 @@ import {
     IconUser,
 } from '@tabler/icons-react';
 import React from 'react';
+import NextLink from 'next/link';
 
 const useStyles = createStyles((theme) => ({
     header: {
@@ -135,7 +136,28 @@ export default function UserMenuDropdown() {
                         />
                     }
                 >
-                    Liked posts
+                    <NextLink
+                        href="/"
+                        style={{ color: 'inherit', textDecoration: 'none' }}
+                    >
+                        Home
+                    </NextLink>
+                </Menu.Item>
+                <Menu.Item
+                    icon={
+                        <IconHeart
+                            size="0.9rem"
+                            color={theme.colors.red[6]}
+                            stroke={1.5}
+                        />
+                    }
+                >
+                    <NextLink
+                        href="/admin"
+                        style={{ color: 'inherit', textDecoration: 'none' }}
+                    >
+                        Admin
+                    </NextLink>
                 </Menu.Item>
                 <Menu.Item
                     icon={

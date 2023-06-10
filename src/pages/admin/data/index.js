@@ -1,6 +1,7 @@
 import React from 'react';
 import NextLink from 'next/link';
 import { Anchor } from '@mantine/core';
+import BaseLayout from '@/layouts/BaseLayout';
 
 export default function DataAdminPage() {
     return (
@@ -12,3 +13,5 @@ export default function DataAdminPage() {
         </div>
     );
 }
+
+DataAdminPage.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;

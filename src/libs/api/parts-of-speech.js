@@ -4,7 +4,7 @@ export default {
     insert: async (args = {}) => {
         try {
             const res = await client.post(
-                '/api/dictionary/parts_of_speech/insert',
+                '/api/dictionary/parts-of-speech/insert',
                 {
                     ...args,
                 }
@@ -18,7 +18,7 @@ export default {
     update: async (args = {}) => {
         try {
             const res = await client.post(
-                '/api/dictionary/parts_of_speech/update',
+                '/api/dictionary/parts-of-speech/update',
                 {
                     ...args,
                 }
@@ -31,7 +31,7 @@ export default {
     delete: async (args = {}) => {
         try {
             const res = await client.post(
-                '/api/dictionary/parts_of_speech/delete',
+                '/api/dictionary/parts-of-speech/delete',
                 {
                     ...args,
                 }
@@ -44,7 +44,7 @@ export default {
     search: async (args = {}) => {
         try {
             const res = await client.post(
-                '/api/dictionary/parts_of_speech/search',
+                '/api/dictionary/parts-of-speech/search',
                 {
                     ...args,
                 }

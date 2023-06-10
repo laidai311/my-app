@@ -1,17 +1,17 @@
-import Parts_of_speechAdminApp from '@/contents/Admin/Parts-of-speech';
+import PartsOfSpeechAdminPage from '@/contents/Admin/Parts-of-speech';
 import BaseLayout from '@/layouts/BaseLayout';
 import Head from 'next/head';
 import React from 'react';
 
-export default function PartsOfSpeechPage() {
+export default function PartsOfSpeechAdminApp() {
     return (
         <>
             <Head>
-                <title>Parts_of_speechPage</title>
+                <title>Parts of speech</title>
             </Head>
-            <Parts_of_speechAdminApp />
+            <PartsOfSpeechAdminPage />
         </>
     );
 }
 
-PartsOfSpeechPage.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
+PartsOfSpeechAdminApp.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;

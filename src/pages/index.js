@@ -18,7 +18,7 @@ export default function HomePage() {
     return (
         <>
             <Head>
-                <title>DaiLai 9966</title>
+                <title>Dictionary - Da!</title>
             </Head>
             <Center h={'calc(var(--window-height) - 60px)'} px={24} pb={230}>
                 <Stack spacing={50}>

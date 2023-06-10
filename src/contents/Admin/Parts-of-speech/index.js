@@ -1,6 +1,5 @@
 import {
     ActionIcon,
-    Avatar,
     Badge,
     Button,
     Card,
@@ -31,13 +30,13 @@ import { modals } from '@mantine/modals';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDidUpdate, useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import partsOfSpeechApi from '@/libs/api/parts_of_speech';
+import partsOfSpeechApi from '@/libs/api/parts-of-speech';
 import { notifications } from '@mantine/notifications';
 import fn from '@/libs/fn';
 import _ from 'lodash';
 import { IconCircleXFilled } from '@tabler/icons-react';
 
-export default function Parts_of_speechAdminApp() {
+export default function PartsOfSpeechAdminPage() {
     const [filters, setFilters] = useState({
         code: '',
     });
@@ -108,7 +107,7 @@ export default function Parts_of_speechAdminApp() {
                     <Stack>
                         {items.map((item) => (
                             <CardItem
-                                key={item.id}
+                                key={item?.id}
                                 data={item}
                                 onEdit={openModal}
                             />
@@ -334,59 +333,59 @@ const Form = ({ total, data }) => {
         throttleCode(form.values.word);
     }, [form.values.word]);
 
-    return (
-        <form
-            onSubmit={form.onSubmit((val) => {
-                if (data) {
-                    updatePartsOfSpeechMutate(
-                        { id: data?.id, ...val },
-                        {
-                            onSuccess: (data) => {
-                                notifications.show({
-                                    title: 'Update Parts Of Speech',
-                                    message: data?.message || 'Update success ',
-                                    color: 'green',
-                                    autoClose: 5000,
-                                });
-                                queryClient.refetchQueries({
-                                    queryKey: ['searchPartsOfSpeech'],
-                                });
-                                modals.closeAll();
-                            },
-                            onError: (err) =>
-                                notifications.show({
-                                    title: 'Update Parts Of Speech',
-                                    message: err?.message || 'Update error',
-                                    color: 'red',
-                                    autoClose: 5000,
-                                }),
-                        }
-                    );
-                } else {
-                    insertPartsOfSpeechMutate(val, {
-                        onSuccess: (data) => {
-                            notifications.show({
-                                title: 'Insert Parts Of Speech',
-                                message: data?.message || 'Insert success',
-                                color: 'green',
-                                autoClose: 5000,
-                            });
-                            queryClient.refetchQueries({
-                                queryKey: ['searchPartsOfSpeech'],
-                            });
-                            modals.closeAll();
-                        },
-                        onError: (err) =>
-                            notifications.show({
-                                title: 'Insert Parts Of Speech',
-                                message: err?.message || 'Insert error',
-                                color: 'red',
-                                autoClose: 5000,
-                            }),
-                    });
+    const onSubmit = (value) => {
+        if (data) {
+            updatePartsOfSpeechMutate(
+                { id: data?.id, ...value },
+                {
+                    onSuccess: (data) => {
+                        notifications.show({
+                            title: 'Update Parts Of Speech',
+                            message: data?.message || 'Update success ',
+                            color: 'green',
+                            autoClose: 5000,
+                        });
+                        queryClient.refetchQueries({
+                            queryKey: ['searchPartsOfSpeech'],
+                        });
+                        modals.closeAll();
+                    },
+                    onError: (err) =>
+                        notifications.show({
+                            title: 'Update Parts Of Speech',
+                            message: err?.message || 'Update error',
+                            color: 'red',
+                            autoClose: 5000,
+                        }),
                 }
-            })}
-        >
+            );
+        } else {
+            insertPartsOfSpeechMutate(value, {
+                onSuccess: (data) => {
+                    notifications.show({
+                        title: 'Insert Parts Of Speech',
+                        message: data?.message || 'Insert success',
+                        color: 'green',
+                        autoClose: 5000,
+                    });
+                    queryClient.refetchQueries({
+                        queryKey: ['searchPartsOfSpeech'],
+                    });
+                    modals.closeAll();
+                },
+                onError: (err) =>
+                    notifications.show({
+                        title: 'Insert Parts Of Speech',
+                        message: err?.message || 'Insert error',
+                        color: 'red',
+                        autoClose: 5000,
+                    }),
+            });
+        }
+    };
+
+    return (
+        <form onSubmit={form.onSubmit(onSubmit)}>
             <Stack>
                 <TextInput
                     withAsterisk
