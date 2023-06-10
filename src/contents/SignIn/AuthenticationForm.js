@@ -198,9 +198,11 @@ export function AuthenticationForm(props) {
                         }
                         radius="md"
                     />
-                    <Group spacing={5} grow px={3}>
-                        {bars}
-                    </Group>
+                    {type === 'register' && (
+                        <Group spacing={5} grow px={3}>
+                            {bars}
+                        </Group>
+                    )}
 
                     {type === 'register' && (
                         <Checkbox

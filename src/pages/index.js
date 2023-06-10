@@ -1,42 +1,57 @@
 import Head from 'next/head';
 import {
-    Anchor,
-    Button,
-    Chip,
-    ColorInput,
-    ColorPicker,
-    Drawer,
+    Box,
+    Center,
+    Code,
     Group,
-    Input,
-    Modal,
-    ScrollArea,
-    Select,
+    Stack,
+    ThemeIcon,
+    Title,
 } from '@mantine/core';
-import { IconAt } from '@tabler/icons-react';
+import { IconBook2 } from '@tabler/icons-react';
 import React from 'react';
-import { useDisclosure } from '@mantine/hooks';
-import { HeaderMegaMenu } from '@/layouts/Headers';
-import { NavbarNested } from '@/layouts/Navbar';
-import { PasswordStrength } from '@/contents/SignIn/PasswordStrength';
 import BaseLayout from '@/layouts/BaseLayout';
 import NextLink from 'next/link';
+import SearchInput from '@/components/SearchInput';
 
 export default function HomePage() {
-    const tempFn = React.useRef(undefined);
-    const [opened, { open, close }] = useDisclosure(false);
-
     return (
         <>
             <Head>
                 <title>DaiLai 9966</title>
             </Head>
-            <NextLink
-                href="/dictionary"
-                passHref
-                style={{ textDecoration: 'none' }}
+            <Center h={'calc(var(--window-height) - 60px)'} px={24} pb={230}>
+                <Stack spacing={50}>
+                    <Center>
+                        <Group>
+                            <ThemeIcon>
+                                <IconBook2 />
+                            </ThemeIcon>
+                            <Title sx={{ userSelect: 'none' }}>
+                                Dictionary
+                            </Title>
+                            <Code sx={{ userSelect: 'none' }} size="xs">
+                                Da!
+                            </Code>
+                        </Group>
+                    </Center>
+                    <SearchInput w="100%" maw={600} />
+                </Stack>
+            </Center>
+            <Box
+                sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
+                py={12}
             >
-                <Anchor>Dictionary</Anchor>
-            </NextLink>
+                <Center>
+                    <NextLink
+                        passHref
+                        target="_blank"
+                        href="https://github.com/laidaid"
+                    >
+                        <Code color="teal">Production by Da!</Code>
+                    </NextLink>
+                </Center>
+            </Box>
         </>
     );
 }

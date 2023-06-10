@@ -3,7 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout';
 import Head from 'next/head';
 import React from 'react';
 
-export default function Parts_of_speechPage() {
+export default function PartsOfSpeechPage() {
     return (
         <>
             <Head>
@@ -14,4 +14,4 @@ export default function Parts_of_speechPage() {
     );
 }
 
-Parts_of_speechPage.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
+PartsOfSpeechPage.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
