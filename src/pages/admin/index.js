@@ -1,19 +1,38 @@
 import React from 'react';
 import NextLink from 'next/link';
-import { Anchor } from '@mantine/core';
-import BaseLayout from '@/layouts/BaseLayout';
-import Editor from '@/components/Editor';
+import {
+    ActionIcon,
+    Button,
+    Container,
+    Flex,
+    Group,
+    Paper,
+} from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
+import { BackPageButton, Layout } from '@/components';
+import Head from 'next/head';
 
-export default function AdminApp() {
+export default function Page() {
     return (
-        <div>
-            AdminPage
-            <NextLink href="/admin/data" passHref>
-                <Anchor>Data</Anchor>
-            </NextLink>
-            <Editor />
-        </div>
+        <>
+            <Head>
+                <title>Admin</title>
+            </Head>
+            <Paper my={24}>
+                <Flex justify="space-between" mb={24}>
+                    <Group>
+                        <BackPageButton />
+                        <NextLink href="/admin/data" passHref>
+                            <Button>Data</Button>
+                        </NextLink>
+                    </Group>
+                    <ActionIcon size="lg">
+                        <IconPlus size="1rem" />
+                    </ActionIcon>
+                </Flex>
+            </Paper>
+        </>
     );
 }
 
-AdminApp.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
+Page.getLayout = (page) => <Layout>{page}</Layout>;

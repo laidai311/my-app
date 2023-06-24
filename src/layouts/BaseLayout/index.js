@@ -2,9 +2,12 @@ import {
     ActionIcon,
     Box,
     Button,
+    Flex,
     Group,
     Header,
+    Menu,
     Tooltip,
+    rem,
     useMantineColorScheme,
 } from '@mantine/core';
 import React from 'react';
@@ -12,6 +15,11 @@ import Head from 'next/head';
 import {
     IconBrandGithub,
     IconBrightnessUp,
+    IconExternalLink,
+    IconHome,
+    IconLock,
+    IconLogout,
+    IconMenu,
     IconMoon,
 } from '@tabler/icons-react';
 import UserMenuDropdown from '../comps/UserMenuDropdown';
@@ -19,7 +27,7 @@ import NextLink from 'next/link';
 import { useAuth } from '@/components/AuthFirebase';
 
 export default function BaseLayout({ children }) {
-    const { data: user } = useAuth();
+    const { data: user, signOutApp } = useAuth();
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
     return (
@@ -34,23 +42,56 @@ export default function BaseLayout({ children }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Box pt={60}>
-                <Header height={60} px="md" fixed>
-                    <Group position="apart" sx={{ height: '100%' }}>
+                <Header p="sm" fixed>
+                    <Flex justify="space-between">
                         {user ? (
-                            <UserMenuDropdown />
+                            <Menu>
+                                <Menu.Target>
+                                    <ActionIcon variant="default">
+                                        <IconMenu />
+                                    </ActionIcon>
+                                </Menu.Target>
+
+                                <Menu.Dropdown>
+                                    <NextLink passHref href="/">
+                                        <Menu.Item
+                                            icon={<IconHome />}
+                                            component="a"
+                                        >
+                                            Home
+                                        </Menu.Item>
+                                    </NextLink>
+                                    <NextLink passHref href="/admin">
+                                        <Menu.Item
+                                            icon={<IconLock />}
+                                            component="a"
+                                        >
+                                            Admin
+                                        </Menu.Item>
+                                    </NextLink>
+                                    <Menu.Item
+                                        icon={<IconLogout />}
+                                        onClick={signOutApp}
+                                    >
+                                        Log out
+                                    </Menu.Item>
+                                </Menu.Dropdown>
+                            </Menu>
                         ) : (
                             <NextLink passHref href="/sign-in">
-                                <Button size="xs">Log in</Button>
+                                <Button component="a" variant="default">
+                                    Log in
+                                </Button>
                             </NextLink>
                         )}
 
-                        <Group spacing={7}>
+                        <Group>
                             <NextLink
                                 passHref
                                 target="_blank"
                                 href="https://github.com/laidaid/my-app"
                             >
-                                <ActionIcon size="lg" radius="xl">
+                                <ActionIcon component="a" variant="default">
                                     <IconBrandGithub />
                                 </ActionIcon>
                             </NextLink>
@@ -63,8 +104,7 @@ export default function BaseLayout({ children }) {
                                 }
                             >
                                 <ActionIcon
-                                    size="lg"
-                                    radius="xl"
+                                    variant="default"
                                     onClick={() => toggleColorScheme()}
                                 >
                                     {colorScheme === 'dark' ? (
@@ -75,7 +115,7 @@ export default function BaseLayout({ children }) {
                                 </ActionIcon>
                             </Tooltip>
                         </Group>
-                    </Group>
+                    </Flex>
                 </Header>
 
                 <Box component="main">{children}</Box>

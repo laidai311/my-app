@@ -3,28 +3,22 @@ import {
     Badge,
     Button,
     Card,
-    Collapse,
     ColorInput,
     Container,
+    Flex,
     Group,
     JsonInput,
     Kbd,
-    List,
     Loader,
     NumberInput,
     Spoiler,
     Stack,
     Text,
     TextInput,
-    ThemeIcon,
+    Textarea,
     Title,
 } from '@mantine/core';
-import {
-    IconArrowDown,
-    IconArrowUp,
-    IconCircleCheck,
-    IconSearch,
-} from '@tabler/icons-react';
+import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import { modals } from '@mantine/modals';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -35,15 +29,23 @@ import { notifications } from '@mantine/notifications';
 import fn from '@/libs/fn';
 import _ from 'lodash';
 import { IconCircleXFilled } from '@tabler/icons-react';
+import Editor from '@/components/Editor';
+import { BackPageButton } from '@/components';
 
 export default function PartsOfSpeechAdminPage() {
     const [filters, setFilters] = useState({
         code: '',
     });
 
-    const { data, status, error } = useQuery({
+    const { data, status, error, refetch } = useQuery({
         queryKey: ['searchPartsOfSpeech', filters],
         queryFn: () => partsOfSpeechApi.search(filters),
+    });
+
+    const { mutate: deletePartsOfSpeech } = useMutation({
+        mutationKey: ['deletePartsOfSpeech'],
+        mutationFn: ({ id }) => partsOfSpeechApi.delete({ id }),
+        onSuccess: () => refetch(),
     });
 
     const items = useMemo(() => {
@@ -82,34 +84,38 @@ export default function PartsOfSpeechAdminPage() {
     return (
         <Container size="xl" py={24}>
             <Stack>
-                <Group position="right" noWrap>
-                    <SearchInput
-                        onSearch={({ search }) =>
-                            setFilters((current) => ({
-                                ...current,
-                                code: search,
-                            }))
-                        }
-                    />
-                    <Button
-                        variant="gradient"
-                        gradient={{ from: 'orange', to: 'red' }}
-                        onClick={() => openModal()}
-                    >
-                        Add new
-                    </Button>
-                </Group>
+                <Flex justify="space-between">
+                    <BackPageButton />
+                    <Group noWrap>
+                        <SearchInput
+                            onSearch={({ search }) =>
+                                setFilters((current) => ({
+                                    ...current,
+                                    code: search,
+                                }))
+                            }
+                        />
+                        <Button
+                            variant="default"
+                            leftIcon={<IconPlus />}
+                            onClick={() => openModal()}
+                        >
+                            Add new
+                        </Button>
+                    </Group>
+                </Flex>
                 {status === 'loading' ? (
                     <Loader />
                 ) : status === 'error' ? (
                     <Text>{error?.message || 'Error!'}</Text>
                 ) : (
                     <Stack>
-                        {items.map((item) => (
+                        {items.map((item, index) => (
                             <CardItem
-                                key={item?.id}
+                                key={item?.id + index}
                                 data={item}
                                 onEdit={openModal}
+                                onDelete={deletePartsOfSpeech}
                             />
                         ))}
                     </Stack>
@@ -119,28 +125,7 @@ export default function PartsOfSpeechAdminPage() {
     );
 }
 
-const FieldJson = (val) => {
-    return JSON.parse(val).map((item) => (
-        <Spoiler fz="sm" maxHeight={43} showLabel="Show more" hideLabel="Hide">
-            {Object.entries(item).map((it) => (
-                <Text size="sm">
-                    <Kbd size="xs" mr={5}>
-                        EN
-                    </Kbd>
-                    <Text display="inline">{it[0]}</Text>
-                    <Kbd size="xs" mx={5}>
-                        VN
-                    </Kbd>
-                    <Text display="inline" color="dimmed">
-                        {it[1]}
-                    </Text>
-                </Text>
-            ))}
-        </Spoiler>
-    ));
-};
-
-const CardItem = ({ data, onEdit }) => {
+const CardItem = ({ data, onEdit, onDelete }) => {
     const openDeleteConfirmModal = () => {
         modals.openConfirmModal({
             title: 'Delete your word',
@@ -165,7 +150,7 @@ const CardItem = ({ data, onEdit }) => {
             labels: { confirm: 'Delete word', cancel: "No don't delete it" },
             confirmProps: { color: 'red' },
             onCancel: () => console.log('Cancel'),
-            onConfirm: () => console.log('Confirmed'),
+            onConfirm: () => onDelete({ id: data?.id }),
         });
     };
 
@@ -189,69 +174,16 @@ const CardItem = ({ data, onEdit }) => {
                 </Group>
             </Group>
 
-            <List
-                mt="md"
-                spacing="xs"
-                size="sm"
-                icon={
-                    <ThemeIcon color="teal" size={24} radius="xl">
-                        <IconCircleCheck size="1rem" />
-                    </ThemeIcon>
-                }
-            >
-                <List.Item>
-                    <Stack spacing={5}>
-                        <Title order={6} weight={600}>
-                            Definitions
-                        </Title>
-                        {FieldJson(data?.definitions)}
-                    </Stack>
-                </List.Item>
-                <List.Item>
-                    <Stack spacing={5}>
-                        <Title order={6} weight={600}>
-                            Function or 'job'
-                        </Title>
-                        {FieldJson(data?.function_or_job)}
-                    </Stack>
-                </List.Item>
-                <List.Item>
-                    <Stack spacing={5}>
-                        <Title order={6} weight={600}>
-                            Example sentences
-                        </Title>
-                        {FieldJson(data?.example_sentences)}
-                    </Stack>
-                </List.Item>
-                <List.Item>
-                    <Stack spacing={5}>
-                        <Title order={6} weight={600}>
-                            Example words
-                        </Title>
-                        {FieldJson(data?.example_words)}
-                    </Stack>
-                </List.Item>
-            </List>
-
-            <Group noWrap position="right" mt="md">
-                <Button
-                    variant="subtle"
-                    color="red"
-                    radius="md"
-                    onClick={openDeleteConfirmModal}
-                >
-                    Delete
-                </Button>
-                <Button radius="md" onClick={() => onEdit?.(data)}>
-                    Edit
-                </Button>
-            </Group>
+            <Editor
+                toolbar={false}
+                editable={false}
+                content={JSON.parse(data?.description)}
+            />
         </Card>
     );
 };
 
 const SearchInput = ({ onSearch }) => {
-    const matches = useMediaQuery('(max-width: 768px)', false);
     const form = useForm({
         initialValues: {
             search: '',
@@ -259,10 +191,7 @@ const SearchInput = ({ onSearch }) => {
     });
 
     return (
-        <form
-            style={{ flexGrow: matches ? 1 : 0 }}
-            onSubmit={form.onSubmit(onSearch)}
-        >
+        <form onSubmit={form.onSubmit(onSearch)}>
             <TextInput
                 icon={<IconSearch size={16} />}
                 placeholder="Search Parts Of Speech"
@@ -287,18 +216,16 @@ const SearchInput = ({ onSearch }) => {
 };
 
 const Form = ({ total, data }) => {
-    const [opened, { toggle }] = useDisclosure(false);
+    const [openedEditor, setOpenedEditor] = useState(false);
     const form = useForm({
         initialValues: {
             word: data?.word || '',
             code: data?.code || '',
             hexColor: data?.hexColor || '',
             translations: data?.translations || '',
-            definitions: data?.definitions || '',
-            function_or_job: data?.function_or_job || '',
-            example_words: data?.example_words || '',
-            example_sentences: data?.example_sentences || '',
             order: data?.order || total + 1,
+            definitions: data?.definitions || '',
+            description: data?.description || '',
         },
 
         validate: {
@@ -435,69 +362,6 @@ const Form = ({ total, data }) => {
                     autoCapitalize="off"
                     {...form.getInputProps('translations')}
                 />
-                <Collapse in={opened}>
-                    <Stack>
-                        <ArrayJsonInput
-                            form={form}
-                            path="definitions"
-                            label="Definitions"
-                            placeholder={JSON.stringify(
-                                [{ Noun: 'DanhTừ' }],
-                                null,
-                                2
-                            )}
-                            {...form.getInputProps('definitions')}
-                        />
-                        <ArrayJsonInput
-                            form={form}
-                            path="function_or_job"
-                            label="Function or 'job'"
-                            placeholder={JSON.stringify(
-                                [{ Action: 'Hành động' }],
-                                null,
-                                2
-                            )}
-                            {...form.getInputProps('function_or_job')}
-                        />
-                        <ArrayJsonInput
-                            form={form}
-                            path="example_words"
-                            label="Example words"
-                            placeholder={JSON.stringify(
-                                [{ be: 'Thì, là, ở,...' }],
-                                null,
-                                2
-                            )}
-                            {...form.getInputProps('example_words')}
-                        />
-                        <ArrayJsonInput
-                            form={form}
-                            path="example_sentences"
-                            label="Example sentences"
-                            placeholder={JSON.stringify(
-                                [
-                                    {
-                                        'I like EnglishClub':
-                                            'Tôi thích EnglishClub',
-                                    },
-                                ],
-                                null,
-                                2
-                            )}
-                            {...form.getInputProps('example_sentences')}
-                        />
-                    </Stack>
-                </Collapse>
-                <Group position="right">
-                    <Button
-                        size="sm"
-                        variant="subtle"
-                        rightIcon={opened ? <IconArrowUp /> : <IconArrowDown />}
-                        onClick={toggle}
-                    >
-                        Options
-                    </Button>
-                </Group>
                 <NumberInput
                     required
                     label="Order"
@@ -505,6 +369,27 @@ const Form = ({ total, data }) => {
                     min={1}
                     {...form.getInputProps('order')}
                 />
+                <TextInput
+                    sx={{ display: 'none' }}
+                    {...form.getInputProps('description')}
+                />
+                {openedEditor ? (
+                    <Editor
+                        content=""
+                        onUpdate={({ editor }) => {
+                            form.setFieldValue(
+                                'description',
+                                JSON.stringify(editor.getJSON())
+                            );
+                        }}
+                    />
+                ) : (
+                    <Textarea
+                        minRows={3}
+                        placeholder="Description"
+                        onClick={() => setOpenedEditor(true)}
+                    />
+                )}
                 <Group position="right">
                     <Button
                         type="button"
@@ -523,76 +408,5 @@ const Form = ({ total, data }) => {
                 </Group>
             </Stack>
         </form>
-    );
-};
-
-const incrementArrayJson = (value) => {
-    if (typeof value !== 'string') return value;
-
-    let arr = [];
-    try {
-        arr = JSON.parse(value);
-    } catch (e) {
-    } finally {
-        arr.push({ English: 'Vietnamese' });
-    }
-
-    return JSON.stringify(arr, null, 2);
-};
-
-const decrementArrayJson = (value) => {
-    if (typeof value !== 'string') return value;
-
-    let arr = [];
-    try {
-        arr = JSON.parse(value);
-    } catch (e) {
-    } finally {
-        arr.pop();
-    }
-
-    return JSON.stringify(arr, null, 2);
-};
-
-const ArrayJsonInput = ({ form, path, ...others }) => {
-    return (
-        <Stack spacing={6}>
-            <JsonInput
-                autoCapitalize="off"
-                validationError="Invalid JSON"
-                formatOnBlur
-                autosize
-                minRows={5}
-                spellCheck="false"
-                {...others}
-            />
-            <Button.Group>
-                <Button
-                    size="xs"
-                    variant="default"
-                    onClick={() => {
-                        form.setFieldValue(
-                            path,
-                            incrementArrayJson(form.values?.[path])
-                        );
-                    }}
-                >
-                    Increment
-                </Button>
-                <Button
-                    size="xs"
-                    variant="default"
-                    disabled={!form.values?.[path]}
-                    onClick={() => {
-                        form.setFieldValue(
-                            path,
-                            decrementArrayJson(form.values?.[path])
-                        );
-                    }}
-                >
-                    Decrement
-                </Button>
-            </Button.Group>
-        </Stack>
     );
 };

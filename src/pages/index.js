@@ -10,11 +10,11 @@ import {
 } from '@mantine/core';
 import { IconBook2 } from '@tabler/icons-react';
 import React from 'react';
-import BaseLayout from '@/layouts/BaseLayout';
 import NextLink from 'next/link';
-import SearchInput from '@/components/SearchInput';
+import SearchInput from '@/components/SearchInput3';
+import { Layout } from '@/components';
 
-export default function HomePage() {
+export default function Page() {
     return (
         <>
             <Head>
@@ -56,4 +56,4 @@ export default function HomePage() {
     );
 }
 
-HomePage.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
+Page.getLayout = (page) => <Layout>{page}</Layout>;

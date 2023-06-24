@@ -1,17 +1,38 @@
 import React from 'react';
 import NextLink from 'next/link';
-import { Anchor } from '@mantine/core';
-import BaseLayout from '@/layouts/BaseLayout';
+import {
+    ActionIcon,
+    Button,
+    Container,
+    Flex,
+    Group,
+    Paper,
+} from '@mantine/core';
+import { BackPageButton, Layout } from '@/components';
+import { IconPlus } from '@tabler/icons-react';
+import Head from 'next/head';
 
-export default function DataAdminPage() {
+export default function Page() {
     return (
-        <div>
-            DataAdminPage
-            <NextLink href="/admin/data/parts-of-speech" passHref>
-                <Anchor>Parts Of Speech</Anchor>
-            </NextLink>
-        </div>
+        <>
+            <Head>
+                <title>Data</title>
+            </Head>
+            <Paper my={24}>
+                <Flex justify="space-between" mb={24}>
+                    <Group>
+                        <BackPageButton />
+                        <NextLink href="data/parts-of-speech" passHref>
+                            <Button>Parts Of Speech</Button>
+                        </NextLink>
+                    </Group>
+                    <ActionIcon size="lg">
+                        <IconPlus size="1rem" />
+                    </ActionIcon>
+                </Flex>
+            </Paper>
+        </>
     );
 }
 
-DataAdminPage.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
+Page.getLayout = (page) => <Layout>{page}</Layout>;

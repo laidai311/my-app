@@ -1,29 +1,40 @@
-import { Input, Kbd } from '@mantine/core';
+import { ActionIcon, Kbd, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { useHotkeys } from '@mantine/hooks';
-import { IconSearch } from '@tabler/icons-react';
+import { IconCircleXFilled, IconSearch } from '@tabler/icons-react';
 import React, { useRef } from 'react';
 
-export default function SearchInput(props) {
+export default function SearchInput({ onSearch, ...others }) {
     const ref = useRef();
-
-    useHotkeys([['ctrl+/', () => ref.current && ref.current.focus()]]);
+    const form = useForm({
+        initialValues: {
+            search: '',
+        },
+    });
+    useHotkeys([['/', () => ref.current && ref.current.focus()]]);
 
     return (
-        <Input
-            {...props}
-            ref={ref}
-            w={{ md: 600 }}
-            icon={<IconSearch size={20} />}
-            radius="xl"
-            size="lg"
-            placeholder="Search"
-            type="search"
-            role="combobox"
-            aria-controls="matches"
-            spellCheck={false}
-            autoCapitalize="off"
-            autoComplete="off"
-            rightSection={<Kbd sx={{ userSelect: 'none' }}>/</Kbd>}
-        />
+        <form onSubmit={form.onSubmit(onSearch)}>
+            <TextInput
+                {...others}
+                ref={ref}
+                icon={<IconSearch />}
+                rightSection={
+                    form.values.search ? (
+                        <ActionIcon
+                            onClick={() => {
+                                form.reset();
+                                onSearch?.({ search: '' });
+                            }}
+                        >
+                            <IconCircleXFilled />
+                        </ActionIcon>
+                    ) : (
+                        <Kbd>/</Kbd>
+                    )
+                }
+                {...form.getInputProps('search')}
+            />
+        </form>
     );
 }

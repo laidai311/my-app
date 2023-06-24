@@ -2,7 +2,6 @@ import { useWindowHeight } from '@/libs/hooks';
 import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import Head from 'next/head';
 import React from 'react';
 import { Notifications } from '@mantine/notifications';
 import { AuthProvider } from '@/components/AuthFirebase';
@@ -27,12 +26,8 @@ export default function App(props) {
     const getLayout = Component.getLayout || ((page) => page);
 
     const [colorScheme, setColorScheme] = React.useState(props.colorScheme);
-    const [isReady, setIsReady] = React.useState();
 
     useWindowHeight();
-    React.useEffect(() => {
-        setIsReady(true);
-    }, []);
 
     const toggleColorScheme = (value) => {
         const nextColorScheme =
@@ -44,47 +39,38 @@ export default function App(props) {
     };
 
     return (
-        <>
-            <Head>
-                <title>DaiLai 9966</title>
-                <meta name="description" content="Dailai9966" />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1, maximum-scale=1"
-                />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-
-            <QueryClientProvider client={queryClient}>
-                <ColorSchemeProvider
-                    colorScheme={colorScheme}
-                    toggleColorScheme={toggleColorScheme}
+        <QueryClientProvider client={queryClient}>
+            <ColorSchemeProvider
+                colorScheme={colorScheme}
+                toggleColorScheme={toggleColorScheme}
+            >
+                <MantineProvider
+                    withGlobalStyles
+                    withNormalizeCSS
+                    theme={{
+                        primaryColor: 'teal',
+                        colorScheme,
+                        components: {
+                            Button: {
+                                defaultProps: {
+                                    variant: 'default',
+                                },
+                            },
+                        },
+                    }}
                 >
-                    <MantineProvider
-                        withGlobalStyles
-                        withNormalizeCSS
-                        theme={{
-                            primaryColor: 'teal',
-                            colorScheme,
-                        }}
-                    >
-                        <ModalsProvider>
-                            <AuthProvider>
-                                <RouteGuard>
-                                    {isReady
-                                        ? getLayout(
-                                              <Component {...pageProps} />
-                                          )
-                                        : null}
-                                </RouteGuard>
-                            </AuthProvider>
-                            <RouterTransition />
-                            <Notifications style={{ zIndex: 1010 }} />
-                        </ModalsProvider>
-                    </MantineProvider>
-                </ColorSchemeProvider>
-            </QueryClientProvider>
-        </>
+                    <ModalsProvider>
+                        <AuthProvider>
+                            <RouteGuard>
+                                {getLayout(<Component {...pageProps} />)}
+                            </RouteGuard>
+                        </AuthProvider>
+                        <RouterTransition />
+                        <Notifications />
+                    </ModalsProvider>
+                </MantineProvider>
+            </ColorSchemeProvider>
+        </QueryClientProvider>
     );
 }
 
