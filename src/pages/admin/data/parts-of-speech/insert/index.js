@@ -1,51 +1,43 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import Head from 'next/head';
 import { BackPageButton, Editor, Layout } from '@/components';
 import { useForm } from '@mantine/form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import partsOfSpeechApi from '@/libs/api/parts-of-speech';
+import dictionaryApi from '@/libs/api/dictionary';
 import _ from 'lodash';
 import fn from '@/libs/fn';
 import { useDidUpdate } from '@mantine/hooks';
 import {
+    ActionIcon,
     Button,
     Center,
     ColorInput,
     Flex,
-    Group,
     LoadingOverlay,
     NumberInput,
     Paper,
     Stack,
     TextInput,
-    Textarea,
 } from '@mantine/core';
-import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/router';
+import { IconFocus } from '@tabler/icons-react';
 
-export default function InsertPage({ total, data }) {
+export default function InsertPage() {
     const router = useRouter();
 
     const form = useForm({
         initialValues: {
-            word: data?.word || '',
-            code: data?.code || '',
-            hexColor: data?.hexColor || '',
-            translations: data?.translations || '',
             order: router.query?.total ? +router.query?.total + 1 : 1,
-            definitions: data?.definitions || '',
-            description: data?.description || '',
         },
 
         validate: {
             word: (value) => (value ? null : 'Invalid word'),
-            code: (value) => (value ? null : 'Invalid code'),
-            translations: (value) => (value ? null : 'Invalid translation'),
+            search: (value) => (value ? null : 'Invalid search'),
+            translation: (value) => (value ? null : 'Invalid translation'),
         },
     });
-
-    const queryClient = useQueryClient();
 
     const { mutate: insertPartsOfSpeechMutate, isLoading: insertLoading } =
         useMutation({
@@ -53,15 +45,9 @@ export default function InsertPage({ total, data }) {
             mutationKey: ['insertPartsOfSpeech'],
         });
 
-    const { mutate: updatePartsOfSpeechMutate, isLoading: updateLoading } =
-        useMutation({
-            mutationFn: (data) => partsOfSpeechApi.update(data),
-            mutationKey: ['updatePartsOfSpeech'],
-        });
-
     const throttleCode = useCallback(
         _.throttle((val) => {
-            form.setFieldValue('code', fn.toCode(val));
+            form.setFieldValue('search', fn.toCode(val));
         }, 300),
         []
     );
@@ -77,22 +63,27 @@ export default function InsertPage({ total, data }) {
                     title: 'Insert Parts Of Speech',
                     message: data?.message || 'Insert success',
                     color: 'green',
-                    autoClose: 5000,
+                    autoClose: 5 * 1000,
                 });
-                queryClient.refetchQueries({
-                    queryKey: ['searchPartsOfSpeech'],
-                });
-                modals.closeAll();
+                router.back();
             },
             onError: (err) =>
                 notifications.show({
                     title: 'Insert Parts Of Speech',
                     message: err?.message || 'Insert error',
                     color: 'red',
-                    autoClose: 5000,
+                    autoClose: 5 * 1000,
                 }),
         });
     };
+
+    const {
+        mutate: searchDictionaryApi,
+        isLoading: searchDictionaryApiIsLoading,
+    } = useMutation({
+        mutationFn: (word) => dictionaryApi.search(word),
+        mutationKey: ['searchDictionaryApi'],
+    });
 
     return (
         <>
@@ -105,10 +96,9 @@ export default function InsertPage({ total, data }) {
                     <BackPageButton />
                 </Flex>
 
-                <LoadingOverlay visible={insertLoading} />
-
                 <form onSubmit={form.onSubmit(onSubmit)}>
-                    <Stack>
+                    <Stack pos="relative">
+                        <LoadingOverlay visible={insertLoading} />
                         <TextInput
                             withAsterisk
                             label="Word"
@@ -117,12 +107,51 @@ export default function InsertPage({ total, data }) {
                             {...form.getInputProps('word')}
                         />
                         <TextInput
-                            withAsterisk
-                            w={'100%'}
-                            label="Code"
-                            placeholder="noun"
+                            label="Phonetic"
+                            placeholder="Phonetic"
                             autoCapitalize="off"
-                            {...form.getInputProps('code')}
+                            rightSection={
+                                <ActionIcon
+                                    loading={searchDictionaryApiIsLoading}
+                                    onClick={() => {
+                                        if (!form.values.word) return;
+                                        searchDictionaryApi(form.values.word, {
+                                            onSuccess: (data) => {
+                                                if (
+                                                    data?.length &&
+                                                    data[0].phonetic
+                                                ) {
+                                                    form.setFieldValue(
+                                                        'phonetic',
+                                                        data[0].phonetic?.replaceAll(
+                                                            '/',
+                                                            ''
+                                                        )
+                                                    );
+                                                } else {
+                                                    notifications.show({
+                                                        title: 'Phonetic Not Found!',
+                                                        color: 'red',
+                                                        autoClose: 5 * 1000,
+                                                    });
+                                                }
+                                            },
+                                            onError: (err) => {
+                                                notifications.show({
+                                                    title: 'DictionaryApi Error',
+                                                    message:
+                                                        err?.message || 'Error',
+                                                    color: 'red',
+                                                    autoClose: 5 * 1000,
+                                                });
+                                            },
+                                        });
+                                    }}
+                                >
+                                    <IconFocus />
+                                </ActionIcon>
+                            }
+                            {...form.getInputProps('phonetic')}
                         />
                         <ColorInput
                             w={'100%'}
@@ -150,10 +179,10 @@ export default function InsertPage({ total, data }) {
                         />
                         <TextInput
                             withAsterisk
-                            label="Translations"
+                            label="Translation"
                             placeholder="Danh từ"
                             autoCapitalize="off"
-                            {...form.getInputProps('translations')}
+                            {...form.getInputProps('translation')}
                         />
                         <NumberInput
                             required
@@ -162,18 +191,26 @@ export default function InsertPage({ total, data }) {
                             min={1}
                             {...form.getInputProps('order')}
                         />
+                        <div>
+                            <TextInput
+                                label="Description"
+                                sx={(theme) => ({ input: { display: 'none' } })}
+                                {...form.getInputProps('description')}
+                            />
+                            <Editor
+                                onUpdate={({ editor }) => {
+                                    form.setFieldValue(
+                                        'description',
+                                        JSON.stringify(editor.getJSON())
+                                    );
+                                }}
+                            />
+                        </div>
                         <TextInput
-                            sx={{ display: 'none' }}
-                            {...form.getInputProps('description')}
-                        />
-                        <Editor
-                            content=""
-                            onUpdate={({ editor }) => {
-                                form.setFieldValue(
-                                    'description',
-                                    JSON.stringify(editor.getJSON())
-                                );
-                            }}
+                            label="Search"
+                            placeholder="noun"
+                            autoCapitalize="off"
+                            {...form.getInputProps('search')}
                         />
                         <Center>
                             <Button type="submit">Submit</Button>

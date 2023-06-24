@@ -3,22 +3,22 @@ import { db } from '@/configs/firebase-admin';
 const handler = async (req, res) => {
     try {
         const {
-            code,
+            search,
             // lastVisible = '',
             // limit = 30,
             // sort = 'desc',
         } = req.body;
 
-        if (typeof code === 'undefined')
-            throw new Error('Field code not on body!');
+        if (typeof search === 'undefined')
+            throw new Error('Field search not on body!');
         if (req.method !== 'POST') throw new Error('Method not supported!');
 
         const dictEEVRef = db.collection('dictionary').doc('EEV');
 
         const query = dictEEVRef
             .collection('parts_of_speech')
-            .where('code', '>=', code)
-            .where('code', '<=', code + '\uf8ff');
+            .where('search', '>=', search)
+            .where('search', '<=', search + '\uf8ff');
 
         const snapshot = await query
             // .orderBy('order', sort)
@@ -53,7 +53,7 @@ const handler = async (req, res) => {
             });
         } else {
             res.status(200).json({
-                data: [],
+                data: { items: [], total: 0 },
                 status: false,
                 code: 'empty',
                 message: 'No data found!',

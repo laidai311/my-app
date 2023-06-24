@@ -30,32 +30,19 @@ export default function Layout(props) {
             <Header px="sm" fixed>
                 <Flex h={60} justify="space-between" align="center">
                     {user ? (
-                        <Menu>
+                        <Menu width={200}>
                             <Menu.Target>
                                 <Button>MENU</Button>
                             </Menu.Target>
 
                             <Menu.Dropdown>
                                 <NextLink passHref href="/">
-                                    <Menu.Item
-                                        icon={<IconHome />}
-                                        component="a"
-                                    >
-                                        Home
-                                    </Menu.Item>
+                                    <Menu.Item component="a">Home</Menu.Item>
                                 </NextLink>
                                 <NextLink passHref href="/admin">
-                                    <Menu.Item
-                                        icon={<IconLock />}
-                                        component="a"
-                                    >
-                                        Admin
-                                    </Menu.Item>
+                                    <Menu.Item component="a">Admin</Menu.Item>
                                 </NextLink>
-                                <Menu.Item
-                                    icon={<IconLogout />}
-                                    onClick={signOutApp}
-                                >
+                                <Menu.Item onClick={signOutApp}>
                                     Log out
                                 </Menu.Item>
                             </Menu.Dropdown>

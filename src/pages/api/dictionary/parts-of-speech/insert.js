@@ -2,21 +2,21 @@ import { db, fieldValue } from '@/configs/firebase-admin';
 import { withAuth } from '@/libs/middleware';
 
 const handler = async (req, res) => {
-    const { code, ...params } = req.body;
+    const { search, ...params } = req.body;
 
     try {
-        if (!code) throw new Error('Invalid code!');
+        if (!search) throw new Error('Invalid search!');
         if (req.method !== 'POST') throw new Error('Method not supported!');
 
         const dictEEVRef = db.collection('dictionary').doc('EEV');
         const parts_of_speechRef = dictEEVRef.collection('parts_of_speech');
         const parts_of_speechSnapshot = await parts_of_speechRef
-            .where('code', '==', code)
+            .where('search', '==', search)
             .get();
 
         if (parts_of_speechSnapshot.empty) {
             const { id } = await parts_of_speechRef.add({
-                code,
+                search,
                 timestamp: fieldValue.serverTimestamp(),
                 ...params,
             });

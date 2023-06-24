@@ -1,18 +1,20 @@
 import { BackPageButton, Editor, Layout, SearchInput } from '@/components';
 import {
-    Box,
+    ActionIcon,
     Button,
     Card,
+    ColorSwatch,
+    Divider,
     Flex,
     Group,
-    Loader,
+    Menu,
     Paper,
     Skeleton,
     Stack,
     Text,
     Title,
 } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
+import { IconAlignRight, IconPlus } from '@tabler/icons-react';
 import Head from 'next/head';
 import React, { useState } from 'react';
 import NextLink from 'next/link';
@@ -21,11 +23,11 @@ import partsOfSpeechApi from '@/libs/api/parts-of-speech';
 
 export default function Page() {
     const [filters, setFilters] = useState({
-        code: '',
+        search: '',
     });
     const queryClient = useQueryClient();
 
-    const { data, status, error, refetch } = useQuery({
+    const { data, status, error } = useQuery({
         queryKey: ['searchPartsOfSpeech', filters],
         queryFn: () => partsOfSpeechApi.search(filters),
         staleTime: 10 * 1000,
@@ -41,16 +43,28 @@ export default function Page() {
             <Head>
                 <title>Parts of speech list</title>
             </Head>
-            <Paper my={24}>
-                <Flex justify="space-between" mb={24}>
+
+            <Paper my="lg">
+                <Flex
+                    direction={{ base: 'column', md: 'row' }}
+                    justify="space-between"
+                    align="start"
+                    gap="md"
+                    mb="lg"
+                >
                     <BackPageButton />
-                    <Group>
+                    <Flex
+                        w={{ base: '100%', md: 'auto' }}
+                        direction={{ base: 'column-reverse', md: 'row' }}
+                        align="flex-end"
+                        gap="md"
+                    >
                         <SearchInput
                             placeholder="Search Parts Of Speech"
                             onSearch={({ search }) => {
                                 setFilters((current) => ({
                                     ...current,
-                                    code: search,
+                                    search,
                                 }));
                             }}
                         />
@@ -61,15 +75,11 @@ export default function Page() {
                             }}
                             passHref
                         >
-                            <Button
-                                component="a"
-                                variant="default"
-                                leftIcon={<IconPlus />}
-                            >
+                            <Button component="a" leftIcon={<IconPlus />}>
                                 Add new
                             </Button>
                         </NextLink>
-                    </Group>
+                    </Flex>
                 </Flex>
 
                 {status === 'loading' ? (
@@ -86,15 +96,48 @@ export default function Page() {
                     <Stack>
                         {items.map((item) => (
                             <Card key={item?.id}>
-                                <Group>
-                                    <Title order={3}>{item?.word}</Title>
-                                </Group>
+                                <Stack>
+                                    <Flex justify="space-between">
+                                        <Flex direction="column">
+                                            <Group>
+                                                <Title order={3}>
+                                                    {item?.word}
+                                                </Title>
+                                                {item?.phonetic && (
+                                                    <Text>
+                                                        /{item?.phonetic}/
+                                                    </Text>
+                                                )}
+                                                {item?.hexColor && (
+                                                    <ColorSwatch
+                                                        color={item?.hexColor}
+                                                    />
+                                                )}
+                                            </Group>
+                                            <Text>{item?.translation}</Text>
+                                        </Flex>
+                                        <Menu>
+                                            <Menu.Target>
+                                                <ActionIcon>
+                                                    <IconAlignRight />
+                                                </ActionIcon>
+                                            </Menu.Target>
 
-                                <Editor
-                                    toolbar={false}
-                                    editable={false}
-                                    content={JSON.parse(item?.description)}
-                                />
+                                            <Menu.Dropdown>
+                                                <Menu.Item>Edit</Menu.Item>
+                                                <Menu.Item color="red">
+                                                    Delete
+                                                </Menu.Item>
+                                            </Menu.Dropdown>
+                                        </Menu>
+                                    </Flex>
+                                    <Divider />
+                                    <Editor
+                                        toolbar={false}
+                                        editable={false}
+                                        content={JSON.parse(item?.description)}
+                                    />
+                                </Stack>
                             </Card>
                         ))}
                     </Stack>

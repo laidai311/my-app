@@ -11,7 +11,7 @@ import {
 import { IconBook2 } from '@tabler/icons-react';
 import React from 'react';
 import NextLink from 'next/link';
-import SearchInput from '@/components/SearchInput3';
+import { SearchInput } from '@/components';
 import { Layout } from '@/components';
 
 export default function Page() {
@@ -35,7 +35,12 @@ export default function Page() {
                             </Code>
                         </Group>
                     </Center>
-                    <SearchInput w="100%" maw={600} />
+                    <SearchInput
+                        placeholder="Search"
+                        radius="xl"
+                        size="lg"
+                        buttonProps={{ radius: 'xl', size: 'lg' }}
+                    />
                 </Stack>
             </Center>
             <Box
