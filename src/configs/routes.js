@@ -1,4 +1,4 @@
 export const routes = {
-    public: ['/', '/sign-in'],
+    public: ['/', '/sign-in', '/dictionary'],
     private: ['/admin'],
 };

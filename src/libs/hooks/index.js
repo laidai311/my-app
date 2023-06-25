@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { useRouter } from 'next/router';
 
 export * from './use-scroll-restoration';
+export * from './use-store';
 
 export const useWindowHeight = () => {
     const isDetectKeyboardOpen = useDetectKeyboardOpen();

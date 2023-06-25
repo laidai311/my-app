@@ -13,8 +13,13 @@ import React from 'react';
 import NextLink from 'next/link';
 import { SearchInput } from '@/components';
 import { Layout } from '@/components';
+import { useStore } from '@/libs/hooks';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
+    const router = useRouter();
+    const { setValue } = useStore();
+
     return (
         <>
             <Head>
@@ -38,8 +43,12 @@ export default function Page() {
                     <SearchInput
                         placeholder="Search"
                         radius="xl"
-                        size="lg"
-                        buttonProps={{ radius: 'xl', size: 'lg' }}
+                        size="md"
+                        buttonProps={{ radius: 'xl', size: 'md' }}
+                        onSearch={({ search }) => {
+                            setValue('searchDictionary', search);
+                            router.push('/dictionary');
+                        }}
                     />
                 </Stack>
             </Center>
