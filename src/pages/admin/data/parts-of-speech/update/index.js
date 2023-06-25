@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import Head from 'next/head';
 import { BackPageButton, Editor, Layout } from '@/components';
 import { useForm } from '@mantine/form';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import partsOfSpeechApi from '@/libs/api/parts-of-speech';
 import dictionaryApi from '@/libs/api/dictionary';
 import _ from 'lodash';
@@ -27,7 +27,8 @@ import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/router';
 import { IconFocus } from '@tabler/icons-react';
 
-export default function InsertPage() {
+export default function UpdatePage() {
+    const queryClient = useQueryClient();
     const router = useRouter();
 
     const form = useForm({
@@ -41,10 +42,8 @@ export default function InsertPage() {
     });
 
     const { status, error } = useQuery({
-        queryKey: ['get'],
+        queryKey: ['getPartsOfSpeech'],
         queryFn: () => partsOfSpeechApi.get({ id: router.query?.id }),
-        cacheTime: 0,
-        staleTime: 0,
         enabled: !!router.query?.id,
         onSuccess: (data) => {
             if (data.data) {
@@ -95,6 +94,9 @@ export default function InsertPage() {
                         message: data?.message || 'Update success',
                         color: 'green',
                         autoClose: 5 * 1000,
+                    });
+                    queryClient.resetQueries({
+                        queryKey: ['searchPartsOfSpeech'],
                     });
                     router.back();
                 },
@@ -279,4 +281,4 @@ export default function InsertPage() {
     );
 }
 
-InsertPage.getLayout = (page) => <Layout>{page}</Layout>;
+UpdatePage.getLayout = (page) => <Layout>{page}</Layout>;

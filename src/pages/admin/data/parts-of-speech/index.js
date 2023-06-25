@@ -18,7 +18,7 @@ import { IconAlignRight, IconPlus } from '@tabler/icons-react';
 import Head from 'next/head';
 import React, { useState } from 'react';
 import NextLink from 'next/link';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import partsOfSpeechApi from '@/libs/api/parts-of-speech';
 import { modals } from '@mantine/modals';
 
@@ -26,15 +26,13 @@ export default function Page() {
     const [filters, setFilters] = useState({
         search: '',
     });
-    // const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
     const { data, status, error, refetch } = useQuery({
         queryKey: ['searchPartsOfSpeech', filters],
         queryFn: () => partsOfSpeechApi.search(filters),
-        cacheTime: 0,
-        staleTime: 0,
-        // initialData: () =>
-        //     queryClient.getQueryData(['searchPartsOfSpeech', filters]),
+        initialData: () =>
+            queryClient.getQueryData(['searchPartsOfSpeech', filters]),
     });
 
     const items = data?.data?.items || [];
