@@ -9,12 +9,11 @@ const handler = async (req, res) => {
         if (req.method !== 'POST') throw new Error('Method not supported!');
 
         const dictEEVRef = db.collection('dictionary').doc('EEV');
-        const parts_of_speechRef = dictEEVRef.collection('parts_of_speech');
-        const parts_of_speechSnapshot = await parts_of_speechRef
-            .where('search', '==', search)
-            .get();
+        const parts_of_speechRef = dictEEVRef.collection('partsOfSpeech');
+        const query = parts_of_speechRef.where('search', '==', search);
+        const snapshot = await query.get();
 
-        if (parts_of_speechSnapshot.empty) {
+        if (snapshot.empty) {
             const { id } = await parts_of_speechRef.add({
                 search,
                 timestamp: fieldValue.serverTimestamp(),
@@ -28,13 +27,18 @@ const handler = async (req, res) => {
                 message: 'Inserted document successfully!',
             });
         } else {
-            const data = parts_of_speechSnapshot.docs.map((doc) => ({
+            const count = await query.count().get();
+
+            const items = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
             }));
 
             res.status(202).json({
-                data,
+                data: {
+                    items,
+                    total: count.data().count,
+                },
                 status: false,
                 code: 'exist',
                 message: 'Document exist!',

@@ -19,6 +19,7 @@ import Head from 'next/head';
 import React, { useState } from 'react';
 import NextLink from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import wordsApi from '@/libs/api/words';
 import partsOfSpeechApi from '@/libs/api/parts-of-speech';
 import { modals } from '@mantine/modals';
 
@@ -28,19 +29,41 @@ export default function Page() {
     });
     const queryClient = useQueryClient();
 
+    const searchPOSCache = queryClient.getQueryData(['searchPartsOfSpeech']);
+
+    const { data: partsOfSpeechData, isLoading: searchPOSIsLoading } = useQuery(
+        {
+            queryFn: () => partsOfSpeechApi.search({ search: '' }),
+            queryKey: ['searchPartsOfSpeech'],
+            initialData: searchPOSCache,
+        }
+    );
+
+    const getPOSById = (id) => {
+        if (!partsOfSpeechData) return '';
+        return (
+            partsOfSpeechData?.data?.items?.find((item) => item.id === id) || ''
+        );
+    };
+
     const { data, status, error, refetch } = useQuery({
-        queryKey: ['searchPartsOfSpeech', filters],
-        queryFn: () => partsOfSpeechApi.search(filters),
-        initialData: () =>
-            queryClient.getQueryData(['searchPartsOfSpeech', filters]),
+        queryKey: ['searchWord', filters],
+        queryFn: () => wordsApi.search(filters),
+        enabled: !searchPOSIsLoading,
+        initialData: () => queryClient.getQueryData(['searchWord', filters]),
     });
 
-    const items = data?.data?.items || [];
     const total = data?.data?.total || 0;
+    const items = data
+        ? data?.data?.items?.map((item) => ({
+              ...item,
+              partOfSpeech: getPOSById(item.partOfSpeech),
+          }))
+        : [];
 
-    const { mutate: deletePartsOfSpeech } = useMutation({
-        mutationKey: ['deletePartsOfSpeech'],
-        mutationFn: ({ id }) => partsOfSpeechApi.delete({ id }),
+    const { mutate: deleteWord } = useMutation({
+        mutationKey: ['deleteWord'],
+        mutationFn: ({ id }) => wordsApi.delete({ id }),
         onSuccess: () => refetch(),
     });
 
@@ -67,14 +90,14 @@ export default function Page() {
             ),
             labels: { confirm: 'Delete word', cancel: "No don't delete it" },
             confirmProps: { color: 'red' },
-            onConfirm: () => deletePartsOfSpeech({ id: value?.id }),
+            onConfirm: () => deleteWord({ id: value?.id }),
         });
     };
 
     return (
         <>
             <Head>
-                <title>Parts of speech list</title>
+                <title>Words list</title>
             </Head>
 
             <Paper my="lg">
@@ -93,7 +116,7 @@ export default function Page() {
                         gap="md"
                     >
                         <SearchInput
-                            placeholder="Search Parts Of Speech"
+                            placeholder="Search word"
                             onSearch={({ search }) => {
                                 setFilters((current) => ({
                                     ...current,
@@ -103,14 +126,12 @@ export default function Page() {
                         />
                         <NextLink
                             href={{
-                                pathname: 'parts-of-speech/insert',
+                                pathname: 'words/insert',
                                 query: { total },
                             }}
                             passHref
                         >
-                            <Button component="a" leftIcon={<IconPlus />}>
-                                Add new
-                            </Button>
+                            <Button leftIcon={<IconPlus />}>Add new</Button>
                         </NextLink>
                     </Flex>
                 </Flex>
@@ -139,13 +160,12 @@ export default function Page() {
                                             {data?.phonetic && (
                                                 <Text>/{data?.phonetic}/</Text>
                                             )}
-                                            {data?.hexColor && (
-                                                <ColorSwatch
-                                                    color={data?.hexColor}
-                                                />
-                                            )}
                                         </Group>
-                                        <Text>{data?.translation}</Text>
+                                        {data?.partOfSpeech && (
+                                            <Text>
+                                                {data?.partOfSpeech?.word || ''}
+                                            </Text>
+                                        )}
                                     </Flex>
                                     <Menu>
                                         <Menu.Target>
@@ -158,8 +178,7 @@ export default function Page() {
                                             <NextLink
                                                 passHref
                                                 href={{
-                                                    pathname:
-                                                        'parts-of-speech/update',
+                                                    pathname: 'words/update',
                                                     query: { id: data?.id },
                                                 }}
                                             >

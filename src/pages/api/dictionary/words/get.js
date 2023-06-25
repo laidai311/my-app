@@ -9,7 +9,7 @@ const handler = async (req, res) => {
 
         const dictEEVRef = db.collection('dictionary').doc('EEV');
 
-        const query = dictEEVRef.collection('partsOfSpeech').doc(id);
+        const query = dictEEVRef.collection('words').doc(id);
 
         const doc = await query.get();
 

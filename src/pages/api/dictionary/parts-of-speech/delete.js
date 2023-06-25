@@ -10,7 +10,7 @@ const handler = async (req, res) => {
 
         const dictEEVRef = db.collection('dictionary').doc('EEV');
         const parts_of_speechRef = dictEEVRef
-            .collection('parts_of_speech')
+            .collection('partsOfSpeech')
             .doc(id);
 
         await parts_of_speechRef.delete();

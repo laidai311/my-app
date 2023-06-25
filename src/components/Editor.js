@@ -54,7 +54,9 @@ export default function Editor({
 }) {
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                codeBlock: false,
+            }),
             Underline,
             Link,
             Superscript,

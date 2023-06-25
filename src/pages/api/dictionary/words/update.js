@@ -12,7 +12,7 @@ const handler = async (req, res) => {
         const wordRef = dictEEVRef.collection('words').doc(id);
 
         await wordRef.update({
-            update_timestamp: fieldValue.serverTimestamp(),
+            updateTimestamp: fieldValue.serverTimestamp(),
             ...params,
         });
 

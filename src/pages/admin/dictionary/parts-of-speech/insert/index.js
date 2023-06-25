@@ -18,7 +18,9 @@ import {
     NumberInput,
     Paper,
     Stack,
+    Text,
     TextInput,
+    Title,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/router';
@@ -199,8 +201,10 @@ export default function InsertPage() {
                             <TextInput
                                 label="Description"
                                 sx={(theme) => ({ input: { display: 'none' } })}
-                                {...form.getInputProps('description')}
                             />
+                            {/* <Text fz={14} fw={500}>
+                                Description
+                            </Text> */}
                             <Editor
                                 onUpdate={({ editor }) => {
                                     form.setFieldValue(
@@ -211,6 +215,7 @@ export default function InsertPage() {
                             />
                         </div>
                         <TextInput
+                            withAsterisk
                             label="Search"
                             placeholder="noun"
                             autoCapitalize="off"

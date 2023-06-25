@@ -265,6 +265,7 @@ export default function UpdatePage() {
                                 />
                             </div>
                             <TextInput
+                                withAsterisk
                                 label="Search"
                                 placeholder="noun"
                                 autoCapitalize="off"

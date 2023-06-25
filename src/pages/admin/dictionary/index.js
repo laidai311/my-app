@@ -16,20 +16,22 @@ export default function Page() {
     return (
         <>
             <Head>
-                <title>Data</title>
+                <title>Dictionary</title>
             </Head>
+
             <Paper my={24}>
                 <Flex justify="space-between" mb={24}>
-                    <Group>
-                        <BackPageButton />
-                        <NextLink href="data/parts-of-speech" passHref>
-                            <Button>Parts Of Speech</Button>
-                        </NextLink>
-                    </Group>
-                    <ActionIcon size="lg">
-                        <IconPlus size="1rem" />
-                    </ActionIcon>
+                    <BackPageButton />
                 </Flex>
+
+                <Group>
+                    <NextLink href="dictionary/parts-of-speech" passHref>
+                        <Button>Parts Of Speech</Button>
+                    </NextLink>
+                    <NextLink href="dictionary/words" passHref>
+                        <Button>Words</Button>
+                    </NextLink>
+                </Group>
             </Paper>
         </>
     );

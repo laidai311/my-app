@@ -1,7 +1,7 @@
 import { db } from '@/configs/firebase-admin';
 
 const handler = async (req, res) => {
-    const { word, lastVisible = 0, limit = 30, sort = 'desc' } = req.body;
+    const { search = '', limit = 30 } = req.body;
 
     try {
         if (req.method !== 'POST') throw new Error('Method not supported!');
@@ -9,8 +9,8 @@ const handler = async (req, res) => {
         const dictEEVRef = db.collection('dictionary').doc('EEV');
         const query = dictEEVRef
             .collection('words')
-            .where('word', '>=', word)
-            .where('word', '<=', word + '\uf8ff');
+            .where('search', '>=', search)
+            .where('search', '<=', search + '\uf8ff');
 
         const snapshot = await query
             // .orderBy('timestamp', sort)
@@ -18,32 +18,27 @@ const handler = async (req, res) => {
             .limit(+limit)
             .get();
 
-        const total = await query.count().get();
-
         if (snapshot.size) {
-            const [lastVisible] = [...snapshot.docs].reverse();
+            const count = await query.count().get();
 
-            const data = snapshot.docs.map((doc) => ({
+            // const [lastVisible] = [...snapshot.docs].reverse();
+
+            const items = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
             }));
 
             res.status(200).json({
-                data,
-                total,
-                next: {
-                    word,
-                    lastVisible: lastVisible.data(),
-                    limit,
-                    sort,
+                data: {
+                    items,
+                    total: count.data().count,
                 },
                 status: true,
                 code: 'success',
                 message: 'Get data successfully!',
             });
         } else {
-            res.status(200).json({
-                data: [],
+            res.status(400).json({
                 status: false,
                 code: 'empty',
                 message: 'No data found!',
