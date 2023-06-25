@@ -18,25 +18,60 @@ import { IconAlignRight, IconPlus } from '@tabler/icons-react';
 import Head from 'next/head';
 import React, { useState } from 'react';
 import NextLink from 'next/link';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import partsOfSpeechApi from '@/libs/api/parts-of-speech';
+import { modals } from '@mantine/modals';
 
 export default function Page() {
     const [filters, setFilters] = useState({
         search: '',
     });
-    const queryClient = useQueryClient();
+    // const queryClient = useQueryClient();
 
-    const { data, status, error } = useQuery({
+    const { data, status, error, refetch } = useQuery({
         queryKey: ['searchPartsOfSpeech', filters],
         queryFn: () => partsOfSpeechApi.search(filters),
-        staleTime: 10 * 1000,
-        initialData: () =>
-            queryClient.getQueryData(['searchPartsOfSpeech', filters]),
+        cacheTime: 0,
+        staleTime: 0,
+        // initialData: () =>
+        //     queryClient.getQueryData(['searchPartsOfSpeech', filters]),
     });
 
     const items = data?.data?.items || [];
     const total = data?.data?.total || 0;
+
+    const { mutate: deletePartsOfSpeech } = useMutation({
+        mutationKey: ['deletePartsOfSpeech'],
+        mutationFn: ({ id }) => partsOfSpeechApi.delete({ id }),
+        onSuccess: () => refetch(),
+    });
+
+    const handleDelete = (value) => {
+        modals.openConfirmModal({
+            title: 'Delete your word',
+            styles: (theme) => ({
+                overlay: {
+                    zIndex: 1002,
+                },
+                inner: {
+                    zIndex: 1003,
+                },
+            }),
+            centered: true,
+            keepMounted: false,
+            transitionProps: { duration: 200 },
+            children: (
+                <Text size="sm">
+                    Are you sure you want to delete your word? This action is
+                    destructive and you will have to contact support to restore
+                    your data.
+                </Text>
+            ),
+            labels: { confirm: 'Delete word', cancel: "No don't delete it" },
+            confirmProps: { color: 'red' },
+            onConfirm: () => deletePartsOfSpeech({ id: value?.id }),
+        });
+    };
 
     return (
         <>
@@ -84,6 +119,7 @@ export default function Page() {
 
                 {status === 'loading' ? (
                     <Card>
+                        <Skeleton height={30} circle mb="xl" />
                         <Skeleton height={8} radius="xl" />
                         <Skeleton height={8} mt={6} radius="xl" />
                         <Skeleton height={8} mt={6} width="70%" radius="xl" />
@@ -93,54 +129,68 @@ export default function Page() {
                         <Text>{error?.message || 'Error!'}</Text>
                     </Card>
                 ) : (
-                    <Stack>
-                        {items.map((item) => (
-                            <Card key={item?.id}>
-                                <Stack>
-                                    <Flex justify="space-between">
-                                        <Flex direction="column">
-                                            <Group>
-                                                <Title order={3}>
-                                                    {item?.word}
-                                                </Title>
-                                                {item?.phonetic && (
-                                                    <Text>
-                                                        /{item?.phonetic}/
-                                                    </Text>
-                                                )}
-                                                {item?.hexColor && (
-                                                    <ColorSwatch
-                                                        color={item?.hexColor}
-                                                    />
-                                                )}
-                                            </Group>
-                                            <Text>{item?.translation}</Text>
-                                        </Flex>
-                                        <Menu>
-                                            <Menu.Target>
-                                                <ActionIcon>
-                                                    <IconAlignRight />
-                                                </ActionIcon>
-                                            </Menu.Target>
-
-                                            <Menu.Dropdown>
-                                                <Menu.Item>Edit</Menu.Item>
-                                                <Menu.Item color="red">
-                                                    Delete
-                                                </Menu.Item>
-                                            </Menu.Dropdown>
-                                        </Menu>
+                    items.map((data) => (
+                        <Card key={data?.id} mb="lg">
+                            <Stack>
+                                <Flex justify="space-between">
+                                    <Flex direction="column">
+                                        <Group>
+                                            <Title order={3}>
+                                                {data?.word}
+                                            </Title>
+                                            {data?.phonetic && (
+                                                <Text>/{data?.phonetic}/</Text>
+                                            )}
+                                            {data?.hexColor && (
+                                                <ColorSwatch
+                                                    color={data?.hexColor}
+                                                />
+                                            )}
+                                        </Group>
+                                        <Text>{data?.translation}</Text>
                                     </Flex>
-                                    <Divider />
-                                    <Editor
-                                        toolbar={false}
-                                        editable={false}
-                                        content={JSON.parse(item?.description)}
-                                    />
-                                </Stack>
-                            </Card>
-                        ))}
-                    </Stack>
+                                    <Menu>
+                                        <Menu.Target>
+                                            <ActionIcon>
+                                                <IconAlignRight />
+                                            </ActionIcon>
+                                        </Menu.Target>
+
+                                        <Menu.Dropdown>
+                                            <NextLink
+                                                passHref
+                                                href={{
+                                                    pathname:
+                                                        'parts-of-speech/update',
+                                                    query: { id: data?.id },
+                                                }}
+                                            >
+                                                <Menu.Item>Edit</Menu.Item>
+                                            </NextLink>
+                                            <Menu.Item
+                                                color="red"
+                                                onClick={() =>
+                                                    handleDelete(data)
+                                                }
+                                            >
+                                                Delete
+                                            </Menu.Item>
+                                        </Menu.Dropdown>
+                                    </Menu>
+                                </Flex>
+                                <Divider />
+                                <Editor
+                                    toolbar={false}
+                                    editable={false}
+                                    content={
+                                        data?.description
+                                            ? JSON.parse(data?.description)
+                                            : ''
+                                    }
+                                />
+                            </Stack>
+                        </Card>
+                    ))
                 )}
             </Paper>
         </>

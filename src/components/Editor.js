@@ -7,6 +7,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import { Spoiler } from '@mantine/core';
+import { useDidUpdate } from '@mantine/hooks';
 
 export default function Editor({
     content = '',
@@ -28,6 +29,12 @@ export default function Editor({
         content,
         onUpdate,
     });
+
+    useDidUpdate(() => {
+        if (editor && !editor.getText() && content) {
+            editor.commands.setContent(content);
+        }
+    }, [content]);
 
     return (
         <RichTextEditor
@@ -83,7 +90,7 @@ export default function Editor({
             )}
 
             <Spoiler
-                maxHeight={editable ? 'auto' : 125}
+                maxHeight={editable ? 'auto' : 120}
                 showLabel="Show more"
                 hideLabel="Hide"
             >

@@ -47,7 +47,7 @@ export default function InsertPage() {
 
     const throttleCode = useCallback(
         _.throttle((val) => {
-            form.setFieldValue('search', fn.toCode(val));
+            form.setFieldValue('search', fn.toSearch(val));
         }, 300),
         []
     );

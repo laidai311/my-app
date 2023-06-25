@@ -251,7 +251,7 @@ const Form = ({ total, data }) => {
 
     const throttleCode = useCallback(
         _.throttle((val) => {
-            form.setFieldValue('code', fn.toCode(val));
+            form.setFieldValue('code', fn.toSearch(val));
         }, 300),
         []
     );

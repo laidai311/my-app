@@ -23,7 +23,7 @@ export default {
             .replace(/^-+/, '') //trim starting dash
             .replace(/-+$/, ''); //trim ending dash
     },
-    toCode(s) {
+    toSearch(s) {
         return s
             .toString()
             .normalize('NFD')

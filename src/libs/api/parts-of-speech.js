@@ -54,4 +54,17 @@ export default {
             throw error;
         }
     },
+    get: async (args = {}) => {
+        try {
+            const res = await client.post(
+                '/api/dictionary/parts-of-speech/get',
+                {
+                    ...args,
+                }
+            );
+            return res.data;
+        } catch (error) {
+            throw error;
+        }
+    },
 };

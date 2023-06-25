@@ -12,10 +12,6 @@ import {
 import {
     IconBrandGithub,
     IconBrightnessUp,
-    IconHome,
-    IconLock,
-    IconLogout,
-    IconMenu,
     IconMoon,
 } from '@tabler/icons-react';
 import NextLink from 'next/link';
@@ -37,10 +33,10 @@ export default function Layout(props) {
 
                             <Menu.Dropdown>
                                 <NextLink passHref href="/">
-                                    <Menu.Item component="a">Home</Menu.Item>
+                                    <Menu.Item>Home</Menu.Item>
                                 </NextLink>
                                 <NextLink passHref href="/admin">
-                                    <Menu.Item component="a">Admin</Menu.Item>
+                                    <Menu.Item>Admin</Menu.Item>
                                 </NextLink>
                                 <Menu.Item onClick={signOutApp}>
                                     Log out
@@ -49,7 +45,7 @@ export default function Layout(props) {
                         </Menu>
                     ) : (
                         <NextLink passHref href="/sign-in">
-                            <Button component="a">Log in</Button>
+                            <Button>Log in</Button>
                         </NextLink>
                     )}
 
@@ -59,7 +55,7 @@ export default function Layout(props) {
                             target="_blank"
                             href="https://github.com/laidaid/my-app"
                         >
-                            <ActionIcon component="a">
+                            <ActionIcon>
                                 <IconBrandGithub />
                             </ActionIcon>
                         </NextLink>
