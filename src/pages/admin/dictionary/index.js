@@ -25,11 +25,11 @@ export default function Page() {
                 </Flex>
 
                 <Group>
-                    <NextLink href="dictionary/parts-of-speech" passHref>
-                        <Button>Parts Of Speech</Button>
-                    </NextLink>
                     <NextLink href="dictionary/words" passHref>
                         <Button>Words</Button>
+                    </NextLink>
+                    <NextLink href="dictionary/parts-of-speech" passHref>
+                        <Button>Parts Of Speech</Button>
                     </NextLink>
                 </Group>
             </Paper>

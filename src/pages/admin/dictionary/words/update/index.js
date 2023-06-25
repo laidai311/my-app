@@ -27,6 +27,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/router';
 import { IconFocus } from '@tabler/icons-react';
+import { useAuth } from '@/components/AuthFirebase';
 
 export default function UpdatePage() {
     const queryClient = useQueryClient();
@@ -84,6 +85,8 @@ export default function UpdatePage() {
         throttleCode(form.values.word);
     }, [form.values.word]);
 
+    const { refreshToken } = useAuth();
+
     const onSubmit = (value) => {
         updateWord(
             { id: router.query?.id, ...value },
@@ -100,13 +103,17 @@ export default function UpdatePage() {
                     });
                     router.back();
                 },
-                onError: (err) =>
+                onError: (err) => {
                     notifications.show({
                         title: 'Update word',
                         message: err?.message || 'Update error',
                         color: 'red',
                         autoClose: 5 * 1000,
-                    }),
+                    });
+                    if (err?.code === 'token-expired') {
+                        refreshToken();
+                    }
+                },
             }
         );
     };

@@ -14,11 +14,16 @@ import TextStyle from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
 import { Spoiler } from '@mantine/core';
 import { useDidUpdate } from '@mantine/hooks';
-import { IconColorPicker, IconStar } from '@tabler/icons-react';
+import {
+    IconChristmasTree,
+    IconColorPicker,
+    IconStar,
+} from '@tabler/icons-react';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { lowlight } from 'lowlight';
 import tsLanguageSyntax from 'highlight.js/lib/languages/typescript';
 import jsLanguageSyntax from 'highlight.js/lib/languages/javascript';
+import Image from '@tiptap/extension-image';
 
 // register languages that your are planning to use
 lowlight.registerLanguage('ts', tsLanguageSyntax);
@@ -68,6 +73,9 @@ export default function Editor({
             CodeBlockLowlight.configure({
                 lowlight,
             }),
+            Image.configure({
+                inline: true,
+            }),
         ],
         editable,
         content,
@@ -79,6 +87,14 @@ export default function Editor({
             editor.commands.setContent(content);
         }
     }, [content]);
+
+    const addImage = () => {
+        const url = window.prompt('URL');
+
+        if (url) {
+            editor.chain().focus().setImage({ src: url, alt: '' }).run();
+        }
+    };
 
     return (
         <RichTextEditor
@@ -106,6 +122,13 @@ export default function Editor({
                     <RichTextEditor.ControlsGroup>
                         <RichTextEditor.CodeBlock />
                         <InsertStarControl />
+                        <RichTextEditor.Control
+                            onClick={addImage}
+                            aria-label="Insert image"
+                            title="Insert image"
+                        >
+                            <IconChristmasTree stroke={1.5} size="1rem" />
+                        </RichTextEditor.Control>
                     </RichTextEditor.ControlsGroup>
 
                     <RichTextEditor.ControlsGroup>
