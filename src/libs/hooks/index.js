@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useRouter } from 'next/router';
+
+export * from './use-scroll-restoration';
 
 export const useWindowHeight = () => {
     const isDetectKeyboardOpen = useDetectKeyboardOpen();
     React.useEffect(() => {
+        const isMobile =
+            typeof window === 'object'
+                ? /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                      window.navigator.userAgent
+                  )
+                : false;
         const syncHeight = () => {
-            if (isDetectKeyboardOpen) return;
+            if (isDetectKeyboardOpen && isMobile) return;
 
             document.documentElement.style.setProperty(
                 '--window-height',

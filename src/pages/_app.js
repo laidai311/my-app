@@ -1,4 +1,4 @@
-import { useWindowHeight } from '@/libs/hooks';
+import { useScrollRestoration, useWindowHeight } from '@/libs/hooks';
 import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -22,11 +22,11 @@ const queryClient = new QueryClient({
 });
 
 export default function App(props) {
-    const { Component, pageProps } = props;
+    const { Component, pageProps, router } = props;
     const getLayout = Component.getLayout || ((page) => page);
 
     const [colorScheme, setColorScheme] = React.useState(props.colorScheme);
-
+    useScrollRestoration(router);
     useWindowHeight();
 
     const toggleColorScheme = (value) => {
