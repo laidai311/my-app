@@ -16,6 +16,7 @@ import {
     Text,
     Title,
 } from '@mantine/core';
+import NextLink from 'next/link';
 
 export default function Page() {
     const { getValue, setValue } = useStore();
@@ -119,9 +120,20 @@ export default function Page() {
                                 <Flex justify="space-between">
                                     <Flex direction="column">
                                         <Group>
-                                            <Title order={3}>
-                                                {data?.word}
-                                            </Title>
+                                            <NextLink
+                                                passHref
+                                                href={`dictionary/${data?.id}`}
+                                            >
+                                                <Title
+                                                    order={3}
+                                                    style={{}}
+                                                    sx={() => ({
+                                                        textDecoration: 'none',
+                                                    })}
+                                                >
+                                                    {data?.word}
+                                                </Title>
+                                            </NextLink>
                                             {data?.phonetic && (
                                                 <Text>/{data?.phonetic}/</Text>
                                             )}

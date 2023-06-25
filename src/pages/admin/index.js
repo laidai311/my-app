@@ -19,6 +19,15 @@ export default function Page() {
                     <NextLink href="/admin/dictionary" passHref>
                         <Button>Dictionary</Button>
                     </NextLink>
+                    <Button>HTML</Button>
+                    <Button>PUG</Button>
+                    <Button>CSS</Button>
+                    <Button>SCSS</Button>
+                    <Button>Javascript</Button>
+                    <Button>Typescript</Button>
+                    <Button>ReactJs</Button>
+                    <Button>NextJs</Button>
+                    <Button>SolidJS</Button>
                 </Group>
             </Paper>
         </>

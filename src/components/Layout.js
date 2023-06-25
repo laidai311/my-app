@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 import {
     IconBrandGithub,
+    IconBrandGooglePodcasts,
     IconBrightnessUp,
     IconMoon,
 } from '@tabler/icons-react';
@@ -28,7 +29,9 @@ export default function Layout(props) {
                     {user ? (
                         <Menu width={200}>
                             <Menu.Target>
-                                <Button>MENU</Button>
+                                <ActionIcon>
+                                    <IconBrandGooglePodcasts />
+                                </ActionIcon>
                             </Menu.Target>
 
                             <Menu.Dropdown>
