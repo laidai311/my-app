@@ -9,6 +9,7 @@ import RouteGuard from '@/components/RouteGuard';
 import { setCookie, getCookie } from 'cookies-next';
 import NextApp from 'next/app';
 import { RouterTransition } from '@/components/RouterTransition';
+import Head from 'next/head';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -39,38 +40,50 @@ export default function App(props) {
     };
 
     return (
-        <QueryClientProvider client={queryClient}>
-            <ColorSchemeProvider
-                colorScheme={colorScheme}
-                toggleColorScheme={toggleColorScheme}
-            >
-                <MantineProvider
-                    withGlobalStyles
-                    withNormalizeCSS
-                    theme={{
-                        primaryColor: 'teal',
-                        colorScheme,
-                        components: {
-                            Button: {
-                                defaultProps: {
-                                    variant: 'default',
+        <>
+            <Head>
+                <title>Da!</title>
+                <meta name="description" content="Dailai9966" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, maximum-scale=1"
+                />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+
+            <QueryClientProvider client={queryClient}>
+                <ColorSchemeProvider
+                    colorScheme={colorScheme}
+                    toggleColorScheme={toggleColorScheme}
+                >
+                    <MantineProvider
+                        withGlobalStyles
+                        withNormalizeCSS
+                        theme={{
+                            primaryColor: 'teal',
+                            colorScheme,
+                            components: {
+                                Button: {
+                                    defaultProps: {
+                                        variant: 'default',
+                                    },
                                 },
                             },
-                        },
-                    }}
-                >
-                    <ModalsProvider>
-                        <AuthProvider>
-                            <RouteGuard>
-                                {getLayout(<Component {...pageProps} />)}
-                            </RouteGuard>
-                        </AuthProvider>
-                        <RouterTransition />
-                        <Notifications />
-                    </ModalsProvider>
-                </MantineProvider>
-            </ColorSchemeProvider>
-        </QueryClientProvider>
+                        }}
+                    >
+                        <ModalsProvider>
+                            <AuthProvider>
+                                <RouteGuard>
+                                    {getLayout(<Component {...pageProps} />)}
+                                </RouteGuard>
+                            </AuthProvider>
+                            <RouterTransition />
+                            <Notifications />
+                        </ModalsProvider>
+                    </MantineProvider>
+                </ColorSchemeProvider>
+            </QueryClientProvider>
+        </>
     );
 }
 
