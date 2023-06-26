@@ -124,13 +124,7 @@ export default function Page() {
                                                 passHref
                                                 href={`dictionary/${data?.id}`}
                                             >
-                                                <Title
-                                                    order={3}
-                                                    style={{}}
-                                                    sx={() => ({
-                                                        textDecoration: 'none',
-                                                    })}
-                                                >
+                                                <Title order={3}>
                                                     {data?.word}
                                                 </Title>
                                             </NextLink>

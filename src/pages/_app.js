@@ -1,3 +1,4 @@
+import '../styles/globals.css';
 import { useScrollRestoration, useWindowHeight } from '@/libs/hooks';
 import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
