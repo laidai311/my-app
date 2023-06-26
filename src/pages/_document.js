@@ -4,7 +4,7 @@ export default function Document() {
     return (
         <Html lang="en">
             <Head>
-                <title>DaiLai 9966</title>
+                <title>Da!</title>
                 <meta name="description" content="Dailai9966" />
                 <meta
                     name="viewport"
