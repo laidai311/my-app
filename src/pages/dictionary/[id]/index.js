@@ -1,4 +1,4 @@
-import { Editor, Layout } from '@/components';
+import { BackPageButton, Editor, Layout } from '@/components';
 import {
     Card,
     Divider,
@@ -67,55 +67,66 @@ export default function Page({ id }) {
               partOfSpeech: getPOSById(wordData?.partOfSpeech),
           }
         : {};
-    console.log(data);
+
     return (
         <>
             <Head>
                 <title>Word</title>
             </Head>
 
-            {status === 'loading' ? (
-                <Card>
-                    <Skeleton height={30} circle mb="xl" />
-                    <Skeleton height={8} radius="xl" />
-                    <Skeleton height={8} mt={6} radius="xl" />
-                    <Skeleton height={8} mt={6} width="70%" radius="xl" />
-                </Card>
-            ) : status === 'error' ? (
-                <Card>
-                    <Text>{error?.message || 'Error!'}</Text>
-                </Card>
-            ) : (
-                <Paper my="lg">
-                    <Card key={data?.id} mb="lg">
-                        <Stack>
-                            <Flex direction="column">
-                                <Group>
-                                    <Title order={3}>{data?.word}</Title>
-                                    {data?.phonetic && (
-                                        <Text>/{data?.phonetic}/</Text>
-                                    )}
-                                </Group>
-                                {data?.partOfSpeech && (
-                                    <Text>
-                                        {data?.partOfSpeech?.word || ''}
-                                    </Text>
-                                )}
-                            </Flex>
-                            <Divider />
-                            <Editor
-                                toolbar={false}
-                                editable={false}
-                                content={
-                                    data?.description
-                                        ? JSON.parse(data?.description)
-                                        : ''
-                                }
-                            />
-                        </Stack>
+            <Paper my="lg">
+                {status === 'loading' ? (
+                    <Card>
+                        <Skeleton height={30} circle mb="xl" />
+                        <Skeleton height={8} radius="xl" />
+                        <Skeleton height={8} mt={6} radius="xl" />
+                        <Skeleton height={8} mt={6} width="70%" radius="xl" />
                     </Card>
-                </Paper>
-            )}
+                ) : status === 'error' ? (
+                    <Card>
+                        <Text>{error?.message || 'Error!'}</Text>
+                    </Card>
+                ) : (
+                    <>
+                        <Flex
+                            direction={{ base: 'column', md: 'row' }}
+                            justify="space-between"
+                            align="start"
+                            gap="md"
+                            mb="lg"
+                        >
+                            <BackPageButton />
+                        </Flex>
+                        <Card key={data?.id} mb="lg">
+                            <Stack>
+                                <Flex direction="column">
+                                    <Group>
+                                        <Title order={3}>{data?.word}</Title>
+                                        {data?.phonetic && (
+                                            <Text>/{data?.phonetic}/</Text>
+                                        )}
+                                    </Group>
+                                    {data?.partOfSpeech && (
+                                        <Text>
+                                            {data?.partOfSpeech?.word || ''}
+                                        </Text>
+                                    )}
+                                </Flex>
+                                <Divider />
+                                <Editor
+                                    toolbar={false}
+                                    editable={false}
+                                    content={
+                                        data?.description
+                                            ? JSON.parse(data?.description)
+                                            : ''
+                                    }
+                                />
+                            </Stack>
+                        </Card>
+                    </>
+                )}
+            </Paper>
         </>
     );
 }

@@ -14,7 +14,11 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { IconAlignRight, IconDotsVertical, IconPlus } from '@tabler/icons-react';
+import {
+    IconAlignRight,
+    IconDotsVertical,
+    IconPlus,
+} from '@tabler/icons-react';
 import Head from 'next/head';
 import React, { useState } from 'react';
 import NextLink from 'next/link';
@@ -167,7 +171,7 @@ export default function Page() {
                                             </Text>
                                         )}
                                     </Flex>
-                                    <Menu>
+                                    <Menu width={100}>
                                         <Menu.Target>
                                             <ActionIcon>
                                                 <IconDotsVertical />

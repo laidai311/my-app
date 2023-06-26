@@ -38,6 +38,9 @@ export default function Layout(props) {
                                 <NextLink passHref href="/">
                                     <Menu.Item>Home</Menu.Item>
                                 </NextLink>
+                                <NextLink passHref href="/dictionary">
+                                    <Menu.Item>Dictionary</Menu.Item>
+                                </NextLink>
                                 <NextLink passHref href="/admin">
                                     <Menu.Item>Admin</Menu.Item>
                                 </NextLink>

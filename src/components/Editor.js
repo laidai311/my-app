@@ -12,7 +12,6 @@ import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import TextStyle from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
-import { Spoiler } from '@mantine/core';
 import { useDidUpdate } from '@mantine/hooks';
 import {
     IconChristmasTree,
@@ -193,24 +192,18 @@ export default function Editor({
                 </RichTextEditor.Toolbar>
             )}
 
-            <Spoiler
-                maxHeight={editable ? 'auto' : 120}
-                showLabel="Show more"
-                hideLabel="Hide"
-            >
-                <RichTextEditor.Content
-                    spellCheck={false}
-                    sx={(theme) => ({
-                        backgroundColor: editable ? '' : 'transparent',
+            <RichTextEditor.Content
+                spellCheck={false}
+                sx={(theme) => ({
+                    backgroundColor: editable ? '' : 'transparent',
 
-                        '.ProseMirror': editable
-                            ? {}
-                            : {
-                                  padding: 0,
-                              },
-                    })}
-                />
-            </Spoiler>
+                    '.ProseMirror': editable
+                        ? {}
+                        : {
+                              padding: 0,
+                          },
+                })}
+            />
         </RichTextEditor>
     );
 }
